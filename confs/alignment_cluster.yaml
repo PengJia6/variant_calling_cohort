@@ -1,0 +1,28 @@
+__default__:
+  cpus: 2
+## rules/common.smk
+#
+#markdupwithbiobambam:
+#  cpus: 4
+#left_align:
+#  cpus: 4
+#sample_bam_merge:
+#  cpus: 24
+#bwa_align:
+#  cpus: 24
+#bowtie2_align:
+#  cpus: 24
+#nextgenmap_align:
+#  cpus: 12
+#subread_align:
+#  cpus: 12
+#minimap2_align:
+#  cpus: 48
+#ngmlr_align:
+#  cpus: 24
+#pbmm2_align:
+#  cpus: 24
+#lra_align:
+#  cpus: 24
+#winnowmap2_align:
+#  cpus: 48

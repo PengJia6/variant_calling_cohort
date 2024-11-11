@@ -1,0 +1,16 @@
+ChineseQuartet:
+  tech: HiFi
+  samples:
+    sample1:
+      path: 1.bam
+      sex: M
+    sample2:
+      path: 2.bam
+      sex: M
+  caller:
+    - gatk
+    - deepvariant
+    - varscan
+    - delly
+    - lumpy
+

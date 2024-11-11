@@ -1,0 +1,78 @@
+#project: chinese_quartet
+path_cluster_config: "confs/alignment_cluster.yaml"
+path_samples_config: "confs/alignment_samples_align.yaml"
+path_ref_config: "confs/alignment_reference.yaml"
+path_software_config: "confs/alignment_software.yaml"
+paras:
+  ONT:
+    bam_left_align: No # Yes/No
+    mark_duplication: No # Yes/No
+    aligners:
+#      - minimap2
+#      - winnowmap2
+#      - ngmlr
+      - lra
+  ONTUL:
+    bam_left_align: No # Yes/No
+    mark_duplication: No # Yes/No
+    aligners:
+      - lra
+#      - minimap2
+#      - winnowmap2
+#      - ngmlr
+  HiFi:
+    bam_left_align: No # Yes/No
+    mark_duplication: No # Yes/No
+    aligners:
+      - lra
+#      - minimap2
+#      - winnowmap2
+#      - ngmlr
+#      - pbmm2
+  CLR:
+    bam_left_align: No # Yes/No
+    mark_duplication: No # Yes/No
+    aligners:
+      - lra
+#      - minimap2
+#      - winnowmap2
+#      - ngmlr
+#      - pbmm2
+  ILM:
+    bam_left_align: Yes # Yes/No
+    mark_duplication: Yes # Yes/No
+    aligners:
+      - bwa
+      - bowtie2
+  BGI:
+    bam_left_align: Yes # Yes/No
+    mark_duplication: Yes # Yes/No
+    aligners:
+      - bwa
+      - bowtie2
+  #  - minimap2
+  #  - nextgenmap
+  #  - subread
+##
+##bam_phasing_caller: dv  # dv
+#single_samples:
+#callers:
+#  - deepvariant
+##  - gatk
+#  - varscan
+#  - pindel
+#  - delly
+#  - manta
+
+#svcallers:
+#  - "cuteSV"
+##  - "sniffles"
+##  - "pbsv"
+##  - "SVision"
+dir_data: "/data/home/pengjia/My_pipelines/alignmentSeq_test"
+
+ref_id: GRCh38
+
+#  - T2T
+#project_name:
+#  "human_hifi_Chinese_Quartet_HGSVC_GIAB_trios"
