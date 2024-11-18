@@ -44,6 +44,7 @@ for cohort, cohort_info in config["samples"].items():
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"
 include: "rules/gatk_hc.smk"
+include: "rules/deepvariant.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"

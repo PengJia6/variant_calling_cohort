@@ -12,6 +12,8 @@ gatk_combine_gvcf:
   cpus: 2
 gatk_hc_call:
   cpus: 2
+deepvariant_call:
+  cpus: 24
 ## rules/common.smk
 #
 #markdupwithbiobambam:
