@@ -19,115 +19,69 @@ def get_run_threads(rule_name):
         return config["threads"]["__default__"]["cpus"]
 
 
-def get_one_sample_fq_R1(wildcards):
-    return config["samples"][wildcards.cohort][wildcards.sample]["path"][wildcards.sample_type][wildcards.tech][
-        wildcards.subsample]["R1"]
-
-
-def get_one_sample_fq_R2(wildcards):
-    return config["samples"][wildcards.cohort][wildcards.sample]["path"][wildcards.sample_type][wildcards.tech][
-        wildcards.subsample]["R2"]
-
-
-def get_one_sample_fq(wildcards):
-    return config["samples"][wildcards.cohort][wildcards.sample]["path"][wildcards.sample_type][wildcards.tech][
-        wildcards.subsample]
-
-
-def get_read_group(wildcards):
-    """Denote sample name and platform in read group."""
-    return f"'@RG\\tID:{wildcards.subsample}\\tLB:{wildcards.subsample}\\tSM:{wildcards.sample}_{wildcards.sample_type}\\tPL:{wildcards.tech}' "
-
-
 def check_samples(conf_samples):
     error = False
     file_samples = open(conf_samples,"r")
     samples_info = yaml.safe_load(file_samples)
-    config["samples"] = samples_info["samples"]
+    if "samples" not in config:
+        config["samples"] = {}
+    for cohort in samples_info:
+        config["samples"][cohort] = samples_info[cohort]
     file_samples.close()
     # if "samples" not in config:
     # samples_info = config["samples"]
     # print(samples_info)
     cohort_names = []
     sample_names = []
-    sample_types = []
+    # sample_types = []
     tech_names = []
-    lib_names = []
+    caller_names = []
 
-    for cohort, cohort_info in samples_info["samples"].items():
+    for cohort, cohort_info in samples_info.items():
         cohort_names.append(cohort)
-        for sample_name, info_t in cohort_info.items():
-            sample_names.append(sample_name)
-            if "path" not in info_t:
-                print("[Error] There is not 'path' info in sample configure file!")
-                error = True
+        this_techs = []
+        if "path" not in cohort_info or "info" not in cohort_info or "tech" not in cohort_info:
+            print(f"[Error] The sample config setting of {cohort} is not correct!\n"
+                  f"e.g.\n"
+                  f"-------------------------\n"
+                  f"{cohort}:\n"
+                  f"    path:\n"
+                  f"        tech1:\n"
+                  f"            sample1: path/to/sample1.bam\n"
+                  f"    info:\n"
+                  f"        sample1:\n"
+                  f"            sex:\n"
+                  f"            ...\n"
+                  f"    tech:\n"
+                  f"        tech1:\n"
+                  f"            caller:\n"
+                  f"               - varscan\n"
+                  f"-------------------------\n"
 
-            for sample_type, info_tt in info_t["path"].items():
-                sample_types.append(sample_type)
-                if len(info_tt) < 1:
-                    print(f"[Error] There is not available reads in {sample_type} sample of {sample_name} !")
+            )
+            error = True
+        else:
+            for tech, info_t in cohort_info["path"].items():
+                tech_names.append(tech)
+                this_techs.append(tech)
+                if tech not in cohort_info["tech"]:
+                    print(f"[Error] There is not {tech} info in sample configure file!")
                     error = True
+                else:
 
-                for tech, info in info_tt.items():
-                    tech_names.append(tech)
-                    if len(info) < 1:
-                        print(f"[Error] There is not available reads in sample {tech} tech of {sample_type} sample of {sample_name}")
-                        error = True
-                    if ("paras" not in config) or (tech not in config["paras"]) or "aligners" not in config["paras"][tech]:
-                        print(f"[Error] error setting of alignment paras for {tech} reads alignment in configure file. e.g.\n"
-                              f"-----------------------\n...\n"
-                              f"paras:\n\t{tech}:\n\t\taligners:\n\t\t\t- xxx\n\t\t\t- yyy、n"
-                              f"-----------------------\n")
-                        error = True
-                    else:
-                        for aligner in config["paras"][tech]["aligners"]:
-                            config["required_software"].append(aligner)
-                        if "mark_duplication" in config["paras"][tech] and config["paras"][tech]["mark_duplication"]:
-                            config["required_software"].append("bammarkduplicates2")
-                        if "bam_left_align" in config["paras"][tech] and config["paras"][tech]["bam_left_align"]:
-                            config["required_software"].append("gatk")
-                    if tech in config["tech_short_reads"]:
-                        for sub_name, one_path in info.items():
-                            # print(sub_name, one_path)
-                            if "R1" not in one_path or "R2" not in one_path:
-                                print(
-                                    f"[Error] Please provide paired-end path of fastq file for {sub_name} of {sample_name}")
-                            if not (one_path["R1"].endswith("fastq.gz") or one_path["R1"].endswith("fq.gz") or
-                                    one_path["R1"].endswith("fastq") or one_path["R1"].endswith("fq") or
-                                    one_path["R1"].endswith("fasta") or one_path["R1"].endswith("fa") or
-                                    one_path["R1"].endswith("fasta.gz") or one_path["R1"].endswith("fa.gz")
-                            ):
-                                print("[Error] The path {} not end with fastq or fasta!".format(
-                                    one_path["R1"]))
-                                error = True
-                            if not (one_path["R2"].endswith("fastq.gz") or (one_path["R2"].endswith("fq.gz")) or
-                                    one_path["R2"].endswith("fastq") or (one_path["R2"].endswith("fq")) or
-                                    one_path["R2"].endswith("fasta.gz") or (one_path["R2"].endswith("fa.gz")) or
-                                    one_path["R2"].endswith("fasta") or (one_path["R2"].endswith("fa"))
-                            ):
-                                print("[Error] The path {} not end with fastq.gz, fq.gz, bam, or cram !".format(
-                                    one_path["R2"]))
-                                error = True
-                            if one_path["R1"] == one_path["R2"]:
-                                print(f"[Error] The R1 path ({one_path['R1']}) same as R2 path ({one_path['R2']})!!!!")
-                                error = True
-
-                    elif tech in config["tech_long_reads"]:
-                        # this_sub_samples = {}
-                        for lib, one_path in info.items():
-                            lib_names.append(lib)
-                            if not (one_path.endswith("fastq.gz") or one_path.endswith("fq.gz") or
-                                    one_path.endswith("fa") or one_path.endswith("fasta") or
-                                    one_path.endswith("fa.gz") or one_path.endswith("fasta.gz") or
-                                    one_path.endswith("fastq") or one_path.endswith("fq")):
-                                print(f"[Error] The path '{one_path}' not end with fastq.gz, fq.gz, fastq, fq, fa, fa.gz, fasta, or fasta.gz !")
-                                error = True
+                    for sample_name, bam_file in info_t.items():
+                        sample_names.append(sample_name)
+                        if len(bam_file) < 1 or not (isinstance(bam_file,str)) or (not bam_file.endswith(".bam")):
+                            print(f"[Error] The bam file for {sample_name} of {tech} is not available!")
+                            error = True
+                for caller in cohort_info["tech"][tech]["caller"]:
+                    if caller not in caller_names:
+                        caller_names.append(caller)
 
     config["name_space"] = {"cohort_names": list(set(cohort_names)),
                             "sample_names": list(set(sample_names)),
-                            "sample_types": list(set(sample_types)),
-                            "tech_names": list(set(tech_names)),
-                            "lib_names": list(set(lib_names))}
+                            "caller_names": list(set(caller_names)),
+                            "tech_names": list(set(tech_names))}
 
     return True if not error else False
 
@@ -178,19 +132,19 @@ def check_config_file(config):
         config["threads"] = yaml.safe_load(open(config["path_cluster_config"]))
 
     if "path_samples_config" not in config:
-        config["path_samples_config"] = "confs/alignment_samples.yaml"
-    if not os.path.exists(config["path_samples_config"]):
-        print(
-            f"[Error] The config file {config['path_samples_config']} for samples ('path_samples_config' in config.yaml) is not available! "
-            "Please provide a config file (yaml format) for the reads of the samples in this project! "
-            "You can setting the config file according the template xxxx")  # TODO add the link
-        error = True
-    else:
-        check_samples(config["path_samples_config"])
-        # print(samples_info)
-
-        if not check_samples(config["path_samples_config"]):
+        config["path_samples_config"] = ["confs/alignment_samples.yaml"]
+    for sample_config in config["path_samples_config"]:
+        if not os.path.exists(sample_config):
+            print(
+                f"[Error] The config file {sample_config} for samples ('path_samples_config' in config.yaml) is not available! "
+                "Please provide a config file (yaml format) for the reads of the samples in this project! "
+                "You can setting the config file according the template")
             error = True
+        else:
+            # check_samples(sample_config)
+            # print(samples_info)
+            if not check_samples(sample_config):
+                error = True
     for soft in config["required_software"]:
         if soft not in config["software"]:
             print(f"[Error] No {soft} setting in {config['path_software_config']}.")
@@ -245,3 +199,37 @@ rule samtools_index:
     run:
         samtools = config["software"]["samtools"]
         shell("{samtools} index -@ {threads} {input}")
+
+rule tabix_vcf:
+    input:
+        "{prefix}.vcf.gz"
+    output:
+        "{prefix}.vcf.gz.tbi"
+    threads: get_run_threads("tabix_vcf")
+    run:
+        tabix = config["software"]["tabix"]
+        shell("{tabix} -@ {threads} {input}")
+
+
+def get_chroms_raw_vcf_merged_vcfs(wildcards):
+    chroms = config["refs"][wildcards.ref_name]["available_chrom"]
+
+    return expand(config["dir_data"] + "{cohort}/{caller}/chroms/{cohort}.{ref_name}.{tech}.{caller}.{chrom}.{suffix}.raw.vcf.gz",
+        cohort=wildcards.cohort,caller=wildcards.caller,ref_name=wildcards.ref_name,tech=wildcards.tech,chrom=chroms,suffix=wildcards.suffix)
+
+
+rule SNVIndel_chrom_concat:
+    input:
+        get_chroms_raw_vcf_merged_vcfs
+    output:
+        config["dir_data"] + "{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
+    log:
+        config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.SNVIndel_chrom_concat.log"
+    benchmark:
+        config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.SNVIndel_chrom_concat.rtime.tsv"
+    wildcard_constraints:
+        caller="varscan|bcftools|GATK_HC"
+    threads: get_run_threads("varscan_call_snp_indel")
+    run:
+        bcftools = config["software"]["bcftools"]
+        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input}  2>{log} 1>{log} ")

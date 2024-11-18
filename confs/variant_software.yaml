@@ -1,6 +1,11 @@
 software:
-  bowtie2: /data/home/pengjia/miniconda3/envs/RNA_STAR_jp/bin/bowtie2
   samtools: "/data/home/pengjia/miniconda3/envs/default2/bin/samtools"
+  tabix: "/data/home/pengjia/miniconda3/envs/default2/bin/tabix"
+  bcftools: "/data/home/pengjia/miniconda3/envs/default2/bin/bcftools"
+  varscan: "/data/home/pengjia/miniconda3/envs/default/bin/varscan"
+  gatk: "/data/home/pengjia/miniconda3/envs/ngs/bin/gatk"
+other:
+  bowtie2: /data/home/pengjia/miniconda3/envs/RNA_STAR_jp/bin/bowtie2
   bwa: "/data/home/pengjia/miniconda3/envs/ngs/bin/bwa"
   bammarkduplicates2: /data/home/pengjia/miniconda3/envs/default2/bin/bammarkduplicates2
   gatk: "/data/home/pengjia/miniconda3/envs/ngs/bin/gatk"

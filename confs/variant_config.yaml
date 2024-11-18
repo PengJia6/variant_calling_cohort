@@ -1,43 +1,44 @@
 #project: chinese_quartet
-path_cluster_config: "confs/alignment_cluster.yaml"
-path_samples_config: "confs/alignment_samples_align.yaml"
-path_ref_config: "confs/alignment_reference.yaml"
-path_software_config: "confs/alignment_software.yaml"
+path_cluster_config: "confs/variant_cluster.yaml"
+path_samples_config:
+  - "confs/variant_samples.yaml"
+path_ref_config: "confs/variant_reference.yaml"
+path_software_config: "confs/variant_software.yaml"
 paras:
   ONT:
     bam_left_align: No # Yes/No
     mark_duplication: No # Yes/No
     aligners:
-#      - minimap2
-#      - winnowmap2
-#      - ngmlr
+      #      - minimap2
+      #      - winnowmap2
+      #      - ngmlr
       - lra
   ONTUL:
     bam_left_align: No # Yes/No
     mark_duplication: No # Yes/No
     aligners:
       - lra
-#      - minimap2
-#      - winnowmap2
-#      - ngmlr
+  #      - minimap2
+  #      - winnowmap2
+  #      - ngmlr
   HiFi:
     bam_left_align: No # Yes/No
     mark_duplication: No # Yes/No
     aligners:
       - lra
-#      - minimap2
-#      - winnowmap2
-#      - ngmlr
-#      - pbmm2
+  #      - minimap2
+  #      - winnowmap2
+  #      - ngmlr
+  #      - pbmm2
   CLR:
     bam_left_align: No # Yes/No
     mark_duplication: No # Yes/No
     aligners:
       - lra
-#      - minimap2
-#      - winnowmap2
-#      - ngmlr
-#      - pbmm2
+  #      - minimap2
+  #      - winnowmap2
+  #      - ngmlr
+  #      - pbmm2
   ILM:
     bam_left_align: Yes # Yes/No
     mark_duplication: Yes # Yes/No

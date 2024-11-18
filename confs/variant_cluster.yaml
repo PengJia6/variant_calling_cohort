@@ -1,5 +1,17 @@
 __default__:
   cpus: 2
+varscan_call_snp_indel:
+  cpus: 12
+SNVIndel_chrom_concat:
+  cpus: 12
+bcftools_call:
+  cpus: 12
+gatk_genotype:
+  cpus: 2
+gatk_combine_gvcf:
+  cpus: 2
+gatk_hc_call:
+  cpus: 2
 ## rules/common.smk
 #
 #markdupwithbiobambam:

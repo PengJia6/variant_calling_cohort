@@ -1,0 +1,50 @@
+ChineseQuartet:
+  #  samples:
+  #    sample1:
+  #      path:
+  #        HiFi: "xx.bam"
+  #      sex: M
+  #    sample2:
+  #      path:
+  #        HiFi: "xx.bam"
+  #      sex: M
+  path:
+    NGS:
+      SCAG3M07_old: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG3M07_old/blood/ZiBoFamily.SCAG3M07_old.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG3M04: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG3M04/blood/ZiBoFamily.SCAG3M04.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG4M12: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG4M12/blood/ZiBoFamily.SCAG4M12.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG3M01: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG3M01/blood/ZiBoFamily.SCAG3M01.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG2M7: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG2M7/blood/ZiBoFamily.SCAG2M7.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG3M09: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG3M09/blood/ZiBoFamily.SCAG3M09.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG3M07: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG3M07/blood/ZiBoFamily.SCAG3M07.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG4M7: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG4M7/blood/ZiBoFamily.SCAG4M7.blood.GRCh38.ILM.bwa.markdup.bam
+      SCAG4M5: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG4M5/blood/ZiBoFamily.SCAG4M5.blood.GRCh38.ILM.bwa.markdup.bam
+  info:
+    SCAG3M07_old:
+      sex: F
+    SCAG3M04:
+      sex: F
+    SCAG4M12:
+      sex: F
+    SCAG3M01:
+      sex: F
+    SCAG2M7:
+      sex: F
+    SCAG3M09:
+      sex: F
+    SCAG3M07:
+      sex: F
+    SCAG4M7:
+      sex: F
+    SCAG4M5:
+      sex: F
+  tech:
+    NGS:
+      caller:
+        - GATK_HC
+        #        - deepvariant
+        - varscan
+        - bcftools
+#        - delly
+#        - lumpy
+
