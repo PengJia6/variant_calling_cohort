@@ -26,8 +26,8 @@ rule bcftools_call:
         bcftools = config["software"]["bcftools"]
         # shell("echo {bcftools} mpileup -r {wildcards.chrom}  --threads {threads} -B -f {input.ref} -o {output} {input.bams} "
         #       ">{log} ")
-        shell("{bcftools} mpileup -r {wildcards.chrom} --threads {threads} -f {input.ref} {input.bams} 2>> {log}|"
-              "{bcftools} call --threads -mv -Oz -o {output} "
+        shell("{bcftools} mpileup -r {wildcards.chrom} --threads {threads} -f {input.ref} {input.bams} |"
+              "{bcftools} call --threads {threads} -mv -Oz -o {output} "
               "2>>{log} 1>>{log} ")
 
 

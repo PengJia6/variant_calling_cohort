@@ -213,14 +213,17 @@ rule tabix_vcf:
 
 def get_chroms_raw_vcf_merged_vcfs(wildcards):
     chroms = config["refs"][wildcards.ref_name]["available_chrom"]
-
-    return expand(config["dir_data"] + "{cohort}/{caller}/chroms/{cohort}.{ref_name}.{tech}.{caller}.{chrom}.{suffix}.raw.vcf.gz",
-        cohort=wildcards.cohort,caller=wildcards.caller,ref_name=wildcards.ref_name,tech=wildcards.tech,chrom=chroms,suffix=wildcards.suffix)
+    vcfs = []
+    vcfs_idx = []
+    for chrom in chroms:
+        vcfs.append(config["dir_data"] + f"{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
+        vcfs_idx.append(config["dir_data"] + f"{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
+    return {"vcf": vcfs, "vcf_idx": vcfs_idx}
 
 
 rule SNVIndel_chrom_concat:
     input:
-        get_chroms_raw_vcf_merged_vcfs
+        unpack(get_chroms_raw_vcf_merged_vcfs)
     output:
         config["dir_data"] + "{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
     log:
@@ -229,7 +232,7 @@ rule SNVIndel_chrom_concat:
         config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.SNVIndel_chrom_concat.rtime.tsv"
     wildcard_constraints:
         caller="varscan|bcftools|GATK_HC"
-    threads: get_run_threads("varscan_call_snp_indel")
+    threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
-        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input}  2>{log} 1>{log} ")
+        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {inpu.vcf}  2>{log} 1>{log} ")

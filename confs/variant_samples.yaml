@@ -41,7 +41,7 @@ ChineseQuartet:
   tech:
     NGS:
       caller:
-        - GATK_HC
-        - deepvariant
+#        - GATK_HC
+#        - deepvariant
         - varscan
-        - bcftools
+#        - bcftools

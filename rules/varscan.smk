@@ -45,7 +45,8 @@ rule samtools_mpileup:
 #
 rule varscan_call_snp_indel:
     input:
-        config["dir_data"] + "{cohort}/samtools/chroms/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup"
+        mpileup=config["dir_data"] + "{cohort}/samtools/chroms/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup",
+        ref_idx=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai"
     output:
         vcf=config["dir_data"] + "{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.raw.vcf.gz",
         sample=config["dir_data"] + "{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.samples.txt"
@@ -64,10 +65,9 @@ rule varscan_call_snp_indel:
         # return samples
         bcftools = config["software"]["bcftools"]
         varscan = config["software"]["varscan"]
-        shell("echo '{varscan} mpileup2cns {input} {params.extra} --min-coverage 6 --min-reads2 3 --variants 1 "
+        shell("echo '{varscan} mpileup2cns {input.mpileup} {params.extra} --min-coverage 6 --min-reads2 3 --variants 1 "
               "--min-avg-qual 8  --min-var-freq 0.1 --output-vcf 1 --vcf-sample-list {output.sample} | "
               "{bcftools} view -Oz -o {output.vcf} ' >{log} ")
-        shell("{varscan} mpileup2cns {input} {params.extra} --min-coverage 6 --min-reads2 3 --variants	1 "
-              "--min-avg-qual 8  --min-var-freq 0.1 --output-vcf 1 --vcf-sample-list {output.sample} 2 >>{log}| "
-              "{bcftools} view -Oz -o {output.vcf} 1>>{log} 2>>{log} ")
-
+        shell("{varscan} mpileup2cns {input.mpileup} {params.extra} --min-coverage 6 --min-reads2 3 --variants	1 "
+              "--min-avg-qual 8  --min-var-freq 0.1 --output-vcf 1 --vcf-sample-list {output.sample} | "
+              "{bcftools} reheader -f {input.ref_idx} --threads {threads}| {bcftools} view  --threads {threads} -Oz -o {output.vcf} 1>>{log} 2>>{log} ")

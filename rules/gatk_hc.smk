@@ -77,7 +77,7 @@ rule gatk_combine_gvcf:
     run:
         gatk = config["software"]["gatk"]
         inputs = " ".join([("-V " + f) for f in input.gvcfs])
-        input_bams = " ".join(["-I {i}" for i in input.bams])
+        input_bams = " ".join([f"-I {i}" for i in input.bams])
 
         java_opt = "" if len(params.java_options) < 2 else " --java-options {params.java_options} "
         shell("{gatk} {java_opt} CombineGVCFs {params.extra} "
@@ -115,7 +115,7 @@ rule gatk_genotype:
         config["dir_data"] + "{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.GATK_HC.rtime.tsv"
     run:
         gatk = config["software"]["gatk"]
-        input_bams = " ".join(["-I {i}" for i in input.bams])
+        input_bams = " ".join([f"-I {i}" for i in input.bams])
         java_opt = "" if len(params.java_options) < 2 else " --java-options {params.java_options} "
         shell("{gatk} {java_opt}  GenotypeGVCFs {params.extra} "
               " -R {input.ref} -V {input.vcf} {input_bams}  -O {output.vcf} 2>{log} 1>{log}")
