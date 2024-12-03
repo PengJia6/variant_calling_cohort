@@ -8,6 +8,7 @@ Support caller:
 - deepvariant
 - varscan
 - bcftools
+- pindel
 
 
 
