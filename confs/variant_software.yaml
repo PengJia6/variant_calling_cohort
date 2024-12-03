@@ -4,6 +4,8 @@ software:
   bcftools: "/data/home/pengjia/miniconda3/envs/default2/bin/bcftools"
   varscan: "/data/home/pengjia/miniconda3/envs/default/bin/varscan"
   gatk: "/data/home/pengjia/miniconda3/envs/ngs/bin/gatk"
+  pindel: "/data/home/pengjia/mysoftware/mutation/pindel/pindel/pindel"
+  pindel2vcf: "/data/home/pengjia/mysoftware/mutation/pindel/pindel/pindel2vcf"
 other:
   bowtie2: /data/home/pengjia/miniconda3/envs/RNA_STAR_jp/bin/bowtie2
   bwa: "/data/home/pengjia/miniconda3/envs/ngs/bin/bwa"
@@ -15,6 +17,12 @@ other:
   pbmm2: "/data/home/pengjia/miniconda3/envs/pbmm2/bin/pbmm2"
   ngmlr: "/data/home/pengjia/miniconda3/envs/pbmm2/bin/ngmlr"
 
+  manta: "/data/home/pengjia/miniconda3/envs/py27_manta/bin/configManta.py"
+  delly: "/data/home/pengjia/miniconda3/envs/ngs/bin/delly"
+  svaba: "/data/home/pengjia/miniconda3/envs/svaba/bin/svaba"
+  smoove: "/data/home/pengjia/miniconda3/envs/smoove/bin/smoove"
+
+  varscan: "/data/home/pengjia/miniconda3/envs/default/bin/varscan"
 
 
 

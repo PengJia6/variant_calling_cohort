@@ -17,7 +17,7 @@ rule deepvariant_call:
     output:
         vcf_gz=config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.vcf.gz",
         gvcf_gz=config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.g.vcf.gz"
-    # gvcf_gz=config["dir_variants"] + "dv/dv_details/{sample}/{sample}.{prefix}.dv.raw.g.vcf.gz"
+        # gvcf_gz=config["dir_variants"] + "dv/dv_details/{sample}/{sample}.{prefix}.dv.raw.g.vcf.gz"
     log:
         config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.log",
 
@@ -80,12 +80,12 @@ rule deepvariant_merge_vcf:
     input:
         unpack(get_vcfs_for_deepvariant_merge_vcf)
     output:
-        vcf=config["dir_data"] + "{cohort}/deepvariant/chroms/{cohort}.{ref_name}.{tech}.deepvariant.{chrom}.SNVIndel.raw.vcf.gz",
+        vcf=config["dir_data"] + "{cohort}/deepvariant/{cohort}.{ref_name}.{tech}.deepvariant.SNVIndel.raw.vcf.gz",
     params: ""
     log:
-        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.{chrom}.deepvariant.merge.log"
+        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.deepvariant.merge.log"
     benchmark:
-        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.{chrom}.deepvariant.merge.rtime.tsv"
+        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.deepvariant.merge.rtime.tsv"
     run:
         if len(input.gvcf_gz) == 1:
             shell("cp {input.vcf_gz} {output.vcf}")
@@ -99,5 +99,5 @@ rule deepvariant_merge_vcf:
 
             shell("docker run -v {input_dir}:/input quay.io/mlin/glnexus:v1.2.7 /usr/local/bin/glnexus_cli "
                   "--config DeepVariantWGS "
-                  "{inputs_str} |"
-                  "{bcftools} view -Oz -o {output.vcf}")
+                  "{inputs_str} 2>>{log}|"
+                  "{bcftools} view -Oz -o {output.vcf} 2>>{log}")

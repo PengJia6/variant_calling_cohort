@@ -4,6 +4,7 @@ GRCh38:
   name: 'GRCh38'
   fasta: "/data/home/pengjia/Reference/GRCh38_no_alt/GRCh38_no_alt.fasta"
   index: "/data/home/pengjia/Reference/GRCh38_no_alt/GRCh38_no_alt.fasta.fai"
+  exclude: "/data/home/pengjia/Project_Data/TR_analysis/regions/GRCh38/work_dir/merge.filterGapCent.bed"
   available_chrom: ['chr1', 'chr2', 'chr3', 'chr4', 'chr5',
               'chr6', 'chr7', 'chr8', 'chr9', 'chr10',
               'chr11', 'chr12', 'chr13', 'chr14', 'chr15',

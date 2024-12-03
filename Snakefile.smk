@@ -38,13 +38,16 @@ for cohort, cohort_info in config["samples"].items():
         callers = cohort_info["tech"][tech]["caller"]
         samples = [i for i in tech_info]
         for caller in callers:
-            if caller in ["varscan", "bcftools","GATK_HC"]:
+            if caller in ["varscan", "bcftools","GATK_HC","deepvariant"]:
                 targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
+            if caller in ["pindel"]:
+                targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
 
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"
 include: "rules/gatk_hc.smk"
 include: "rules/deepvariant.smk"
+include: "rules/pindel.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"

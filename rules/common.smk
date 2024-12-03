@@ -11,6 +11,18 @@ import os.path
 
 import yaml
 
+# used by varscan, pindel
+def get_samples_bam(wildcards):
+    bams = []
+    bais = []
+    for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
+        bams.append(path_bam)
+        bais.append(path_bam + ".bai")
+    return {"bams": bams, "bais": bais,
+            "ref": config["refs"][wildcards.ref_name]["fasta"],
+            "ref_idx": config["refs"][wildcards.ref_name]["fasta"] + ".fai"
+            }
+
 
 def get_run_threads(rule_name):
     if rule_name in config["threads"]:
@@ -227,12 +239,12 @@ rule SNVIndel_chrom_concat:
     output:
         config["dir_data"] + "{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
     log:
-        config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.SNVIndel_chrom_concat.log"
+        config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.log"
     benchmark:
-        config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.SNVIndel_chrom_concat.rtime.tsv"
+        config["dir_data"] + "{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC"
+        caller="varscan|bcftools|GATK_HC|pindel"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
-        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {inpu.vcf}  2>{log} 1>{log} ")
+        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
