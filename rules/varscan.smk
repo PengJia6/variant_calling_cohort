@@ -62,7 +62,6 @@ rule varscan_call_snp_indel:
         with open(f"{output.sample}","w") as file:
             for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
                 file.write(f"{sample}\n")
-        # return samples
         bcftools = config["software"]["bcftools"]
         varscan = config["software"]["varscan"]
         shell("echo '{varscan} mpileup2cns {input.mpileup} {params.extra} --min-coverage 6 --min-reads2 3 --variants 1 "
