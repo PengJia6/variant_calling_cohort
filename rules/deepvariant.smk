@@ -1,10 +1,10 @@
 # ======================================================================================================================
 # Project: variant_calling_cohort
-# Script : deepvariant.smk TODO check
+# Script : deepvariant.smk
 # Author : Peng Jia
 # Date   :  2024/11/18
 # Email  : pengjia@xjtu.edu.cn; pengjia1110@163.com
-# Description: TODO
+# Description: deepvariant calling
 # ======================================================================================================================
 rule deepvariant_call:
     input:
