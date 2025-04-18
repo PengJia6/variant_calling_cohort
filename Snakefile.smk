@@ -38,16 +38,24 @@ for cohort, cohort_info in config["samples"].items():
         callers = cohort_info["tech"][tech]["caller"]
         samples = [i for i in tech_info]
         for caller in callers:
-            if caller in ["varscan", "bcftools","GATK_HC","deepvariant"]:
+            if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant"]:
                 targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["pindel"]:
+            if caller in ["pindel", ]:
                 targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
+            if caller in ["sniffles", "sniffles2", "cutesv", "svision","svision_pro","debreak"]:
+                for sample in samples:
+                    # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
+                    targets.append(config["dir_data"] + f"{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
 
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"
 include: "rules/gatk_hc.smk"
 include: "rules/deepvariant.smk"
 include: "rules/pindel.smk"
+include: "rules/sniffles.smk"
+include: "rules/cutesv.smk"
+include: "rules/svision.smk"
+include: "rules/debreak.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"

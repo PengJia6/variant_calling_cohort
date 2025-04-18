@@ -1,6 +1,6 @@
 # ======================================================================================================================
 # Project: variant_calling_cohort
-# Script : varscan.smk TODO check 
+# Script : deepvariant.smk TODO check
 # Author : Peng Jia
 # Date   :  2024/11/18
 # Email  : pengjia@xjtu.edu.cn; pengjia1110@163.com
@@ -19,10 +19,10 @@ rule deepvariant_call:
         gvcf_gz=config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.g.vcf.gz"
         # gvcf_gz=config["dir_variants"] + "dv/dv_details/{sample}/{sample}.{prefix}.dv.raw.g.vcf.gz"
     log:
-        config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.log",
+        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.rtime.tsv",
+        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.rtime.tsv",
     threads: get_run_threads("deepvariant_call")
     run:
         dir_tmp = str(output.vcf_gz).rstrip(".vcf.gz") + "_tmp"
@@ -96,6 +96,7 @@ rule deepvariant_merge_vcf:
                 input_vcfs.append("/".join(item.split("/")[-4:]))
             inputs_str = " ".join(["/input/" + item for item in input_vcfs])
             bcftools = config["software"]["bcftools"]
+
 
             shell("docker run -v {input_dir}:/input quay.io/mlin/glnexus:v1.2.7 /usr/local/bin/glnexus_cli "
                   "--config DeepVariantWGS "

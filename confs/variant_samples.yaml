@@ -19,6 +19,10 @@ ChineseQuartet:
       SCAG3M07: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG3M07/blood/ZiBoFamily.SCAG3M07.blood.GRCh38.ILM.bwa.markdup.bam
       SCAG4M7: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG4M7/blood/ZiBoFamily.SCAG4M7.blood.GRCh38.ILM.bwa.markdup.bam
       SCAG4M5: /data/home/pengjia/Project_Data/Zibo_analysis/sr_genome/aligned_reads/ZiBoFamily/SCAG4M5/blood/ZiBoFamily.SCAG4M5.blood.GRCh38.ILM.bwa.markdup.bam
+    HiFi:
+      WangHuamei: "/data/home/pengjia/Project_Data/Inherited_Disease/Zibo_SCA/aligned_reads/Zibo_WHM/WangHuamei/Zibo_WHM.WangHuamei.blood.HiFi.GRCh38.minimap2.bam"
+      JiangShulin: "/data/home/pengjia/Project_Data/Inherited_Disease/Zibo_SCA/aligned_reads/Zibo_WHM/JiangShulin/Zibo_WHM.JiangShulin.blood.HiFi.GRCh38.minimap2.bam"
+      WangFuran: "/data/home/pengjia/Project_Data/Inherited_Disease/Zibo_SCA/aligned_reads/Zibo_WHM/WangFuran/Zibo_WHM.WangFuran.blood.HiFi.GRCh38.minimap2.bam"
   info:
     SCAG3M07_old:
       sex: F
@@ -47,3 +51,6 @@ ChineseQuartet:
         - bcftools
         - pindel
         - manta
+    HiFi:
+      caller:
+        - deepvariant

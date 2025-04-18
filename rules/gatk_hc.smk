@@ -17,10 +17,10 @@ rule gatk_hc_call:
         gvcf=config["dir_data"] + "{cohort}/GATK_HC/samples/{sample}_{tech}/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.g.vcf.gz"
     # =config["dir_variants"] + "gatk/gatk_details/{sample}/{sample}.{prefix}.{contig}.gvcf.gz"
     log:
-        config["dir_data"] + "{cohort}/GATK_HC/samples/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.log"
+        config["dir_data"] + "{cohort}/GATK_HC/logs/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.log"
     threads: get_run_threads("gatk_hc_call")
     benchmark:
-        config["dir_data"] + "{cohort}/GATK_HC/samples/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.rtime.tsv"
+        config["dir_data"] + "{cohort}/GATK_HC/logs/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.rtime.tsv"
 
     params:
         extra="",

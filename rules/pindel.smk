@@ -57,9 +57,9 @@ rule pindel_call:
         extra="",
         dp=5
     log:
-        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.mpileup.log"
+        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.log"
     benchmark:
-        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.mpileup.rtime.tsv"
+        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.rtime.tsv"
     threads: get_run_threads("pindel_call")
     run:
         pindel = config["software"]["pindel"]
