@@ -42,7 +42,7 @@ for cohort, cohort_info in config["samples"].items():
                 targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
             if caller in ["pindel", ]:
                 targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
-            if caller in ["sniffles", "sniffles2", "cutesv", "svision","svision_pro","debreak"]:
+            if caller in ["sniffles", "sniffles2", "cutesv", "svision", "svision_pro", "debreak","pbsv"]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
@@ -56,6 +56,9 @@ include: "rules/sniffles.smk"
 include: "rules/cutesv.smk"
 include: "rules/svision.smk"
 include: "rules/debreak.smk"
+include: "rules/pbsv.smk"
+include: "rules/longtr.smk"
+include: "rules/trgt.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"
