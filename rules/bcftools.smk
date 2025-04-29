@@ -13,14 +13,14 @@ rule bcftools_call:
     input:
         unpack(get_samples_bam)
     output:
-        vcf = config["dir_data"] + "{cohort}/bcftools/chroms/{cohort}.{ref_name}.{tech}.bcftools.{chrom}.SNVIndel.raw.vcf.gz",
+        vcf = config["dir_data"] + "variants_raw/{cohort}/bcftools/chroms/{cohort}.{ref_name}.{tech}.bcftools.{chrom}.SNVIndel.raw.vcf.gz",
     params:
         extra="",
         dp=5
     log:
-        config["dir_data"] + "{cohort}/bcftools/logs/{cohort}.{ref_name}.{tech}.{chrom}.bcftools.mpileup.log"
+        config["dir_data"] + "variants_raw/{cohort}/bcftools/logs/{cohort}.{ref_name}.{tech}.{chrom}.bcftools.mpileup.log"
     benchmark:
-        config["dir_data"] + "{cohort}/bcftools/logs/{cohort}.{ref_name}.{tech}.{chrom}.bcftools.mpileup.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/bcftools/logs/{cohort}.{ref_name}.{tech}.{chrom}.bcftools.mpileup.rtime.tsv"
     threads: get_run_threads("bcftools_call")
     run:
         bcftools = config["software"]["bcftools"]

@@ -16,14 +16,14 @@ rule svision_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "{cohort}/svision/samples/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "{cohort}/svision/samples/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.raw.vcf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/svision/samples/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/svision/samples/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.raw.vcf",
     # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
-        config["dir_data"] + "{cohort}/svision/logs/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/svision/logs/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/svision/logs/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/svision/logs/{cohort}.{sample}.{ref_name}.{tech}.svision.SV.rtime.tsv",
     threads: get_run_threads("svision_call")
     run:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"
@@ -55,14 +55,14 @@ rule svision_pro_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "{cohort}/svision_pro/samples/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "{cohort}/svision_pro/samples/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.raw.vcf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/svision_pro/samples/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/svision_pro/samples/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.raw.vcf",
     # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
-        config["dir_data"] + "{cohort}/svision_pro/logs/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/svision_pro/logs/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/svision_pro/logs/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/svision_pro/logs/{cohort}.{sample}.{ref_name}.{tech}.svision_pro.SV.rtime.tsv",
     threads: get_run_threads("svision_pro_call")
     run:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"

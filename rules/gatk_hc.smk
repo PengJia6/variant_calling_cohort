@@ -14,13 +14,13 @@ rule gatk_hc_call:
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
     # ref_dict= lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
     output:
-        gvcf=config["dir_data"] + "{cohort}/GATK_HC/samples/{sample}_{tech}/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.g.vcf.gz"
+        gvcf=config["dir_data"] + "variants_raw/{cohort}/GATK_HC/samples/{sample}_{tech}/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.g.vcf.gz"
     # =config["dir_variants"] + "gatk/gatk_details/{sample}/{sample}.{prefix}.{contig}.gvcf.gz"
     log:
-        config["dir_data"] + "{cohort}/GATK_HC/logs/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.log"
+        config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.log"
     threads: get_run_threads("gatk_hc_call")
     benchmark:
-        config["dir_data"] + "{cohort}/GATK_HC/logs/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{sample}_{tech}_logs/{cohort}.{sample}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_hc.rtime.tsv"
 
     params:
         extra="",
@@ -49,7 +49,7 @@ def get_conbine_gvcf_input(wildcards):
     for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
         bams.append(path_bam)
         bais.append(path_bam + ".bai")
-        vcfs.append(config["dir_data"] + f"{wildcards.cohort}/GATK_HC/samples/{sample}_{wildcards.tech}/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.GATK_HC.{wildcards.chrom}.SNVIndel.g.vcf.gz",)
+        vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/GATK_HC/samples/{sample}_{wildcards.tech}/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.GATK_HC.{wildcards.chrom}.SNVIndel.g.vcf.gz",)
     return {"bams": bams, "bais": bais,
             "ref": config["refs"][wildcards.ref_name]["fasta"],
             "ref_idx": config["refs"][wildcards.ref_name]["fasta"] + ".fai",
@@ -64,15 +64,15 @@ rule gatk_combine_gvcf:
     input:
         unpack(get_conbine_gvcf_input)
     output:
-        vcf=config["dir_data"] + "{cohort}/GATK_HC/chroms/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.g.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/GATK_HC/chroms/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.g.vcf.gz",
     params:
         extra="",
         java_options=""
     threads: get_run_threads("gatk_combine_gvcf")
     log:
-        config["dir_data"] + "{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_combine_gvcf.log"
+        config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_combine_gvcf.log"
     benchmark:
-        config["dir_data"] + "{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_combine_gvcf.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_combine_gvcf.rtime.tsv"
 
     run:
         gatk = config["software"]["gatk"]
@@ -93,7 +93,7 @@ def get_gatk_genotype_input(wildcards):
     return {"bams": bams, "bais": bais,
             "ref": config["refs"][wildcards.ref_name]["fasta"],
             "ref_idx": config["refs"][wildcards.ref_name]["fasta"] + ".fai",
-            "vcf": config["dir_data"] + f"{wildcards.cohort}/GATK_HC/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.GATK_HC.{wildcards.chrom}.SNVIndel.g.vcf.gz",
+            "vcf": config["dir_data"] + f"variants_raw/{wildcards.cohort}/GATK_HC/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.GATK_HC.{wildcards.chrom}.SNVIndel.g.vcf.gz",
             }
 
 
@@ -103,16 +103,16 @@ rule gatk_genotype:
     # vcf=config["dir_variants"] + "{cohort}.{ref_name}.{this_prefix}.gatk.{contig}.g.vcf.gz"
 
     output:
-        vcf=config["dir_data"] + "{cohort}/GATK_HC/chroms/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/GATK_HC/chroms/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.raw.vcf.gz",
     # vcf=config["dir_variants"] + "gatk/gatk_details/contigs/" + config["project"] + ".{prefix}.{contig}.vcf.gz"
     params:
         extra="",
         java_options=""
     threads: get_run_threads("gatk_genotype")
     log:
-        config["dir_data"] + "{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.GATK_HC.log"
+        config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.GATK_HC.log"
     benchmark:
-        config["dir_data"] + "{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.GATK_HC.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.GATK_HC.rtime.tsv"
     run:
         gatk = config["software"]["gatk"]
         input_bams = " ".join([f"-I {i}" for i in input.bams])

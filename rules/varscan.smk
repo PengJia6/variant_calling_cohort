@@ -26,14 +26,14 @@ rule samtools_mpileup:
     input:
         unpack(get_samples_bam)
     output:
-        config["dir_data"] + "{cohort}/samtools/chroms/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup"
+        config["dir_data"] + "variants_raw/{cohort}/samtools/chroms/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup"
     params:
         extra="",
         dp=5
     log:
-        config["dir_data"] + "{cohort}/samtools/logs/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup.log"
+        config["dir_data"] + "variants_raw/{cohort}/samtools/logs/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup.log"
     benchmark:
-        config["dir_data"] + "{cohort}/samtools/logs/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/samtools/logs/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup.rtime.tsv"
     threads: get_run_threads("samtools_mpileup")
     run:
         samtools = config["software"]["samtools"]
@@ -45,19 +45,19 @@ rule samtools_mpileup:
 #
 rule varscan_call_snp_indel:
     input:
-        mpileup=config["dir_data"] + "{cohort}/samtools/chroms/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup",
+        mpileup=config["dir_data"] + "variants_raw/{cohort}/samtools/chroms/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup",
         ref_idx=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai"
     output:
-        vcf=config["dir_data"] + "{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.raw.vcf.gz",
-        sample=config["dir_data"] + "{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.samples.txt"
+        vcf=config["dir_data"] + "variants_raw/{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.raw.vcf.gz",
+        sample=config["dir_data"] + "variants_raw/{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.samples.txt"
     params:
         extra="",
     # samples=get_sample_names
     threads: get_run_threads("varscan_call_snp_indel")
     log:
-        config["dir_data"] + "{cohort}/varscan/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.varscan.log"
+        config["dir_data"] + "variants_raw/{cohort}/varscan/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.varscan.log"
     benchmark:
-        config["dir_data"] + "{cohort}/varscan/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.varscan.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/varscan/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.varscan.rtime.tsv"
     run:
         with open(f"{output.sample}","w") as file:
             for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():

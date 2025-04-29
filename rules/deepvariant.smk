@@ -15,14 +15,14 @@ rule deepvariant_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcf_gz=config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.vcf.gz",
-        gvcf_gz=config["dir_data"] + "{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.g.vcf.gz"
+        vcf_gz=config["dir_data"] + "variants_raw/{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.vcf.gz",
+        gvcf_gz=config["dir_data"] + "variants_raw/{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.g.vcf.gz"
         # gvcf_gz=config["dir_variants"] + "dv/dv_details/{sample}/{sample}.{prefix}.dv.raw.g.vcf.gz"
     log:
-        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.log",
+        config["dir_data"] + "variants_raw/{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.rtime.tsv",
     threads: get_run_threads("deepvariant_call")
     run:
         dir_tmp = str(output.vcf_gz).rstrip(".vcf.gz") + "_tmp"
@@ -69,8 +69,8 @@ def get_vcfs_for_deepvariant_merge_vcf(wildcards):
         #     for sample_type, info_tt in info_t["path"].items():
         # print(wildcards.cohort,sample_type,sample_name,wildcards.this_prefix)
         # for tech, info in info_tt.items():
-        vcfs.append(config["dir_data"] + f"{wildcards.cohort}/deepvariant/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.deepvariant.SNVIndel.vcf.gz")
-        gvcfs.append(config["dir_data"] + f"{wildcards.cohort}/deepvariant/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.deepvariant.SNVIndel.g.vcf.gz")
+        vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/deepvariant/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.deepvariant.SNVIndel.vcf.gz")
+        gvcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/deepvariant/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.deepvariant.SNVIndel.g.vcf.gz")
     return {"gvcf_gz": gvcfs, "vcf_gz": vcfs}
 
 
@@ -80,12 +80,12 @@ rule deepvariant_merge_vcf:
     input:
         unpack(get_vcfs_for_deepvariant_merge_vcf)
     output:
-        vcf=config["dir_data"] + "{cohort}/deepvariant/{cohort}.{ref_name}.{tech}.deepvariant.SNVIndel.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/deepvariant/{cohort}.{ref_name}.{tech}.deepvariant.SNVIndel.raw.vcf.gz",
     params: ""
     log:
-        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.deepvariant.merge.log"
+        config["dir_data"] + "variants_raw/{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.deepvariant.merge.log"
     benchmark:
-        config["dir_data"] + "{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.deepvariant.merge.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/deepvariant/logs/{cohort}.{ref_name}.{tech}.deepvariant.merge.rtime.tsv"
     run:
         if len(input.gvcf_gz) == 1:
             shell("cp {input.vcf_gz} {output.vcf}")

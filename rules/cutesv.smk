@@ -16,14 +16,14 @@ rule cutesv_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "{cohort}/cutesv/samples/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "{cohort}/cutesv/samples/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.raw.vcf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/cutesv/samples/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/cutesv/samples/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.raw.vcf",
     # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
-        config["dir_data"] + "{cohort}/cutesv/logs/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/cutesv/logs/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/cutesv/logs/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/cutesv/logs/{cohort}.{sample}.{ref_name}.{tech}.cutesv.SV.rtime.tsv",
     threads: get_run_threads("cutesv_call")
     run:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"

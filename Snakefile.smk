@@ -39,13 +39,13 @@ for cohort, cohort_info in config["samples"].items():
         samples = [i for i in tech_info]
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant"]:
-                targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
+                targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
             if caller in ["pindel", ]:
-                targets.append(config["dir_data"] + f"{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
+                targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["sniffles", "sniffles2", "cutesv", "svision", "svision_pro", "debreak","pbsv"]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
-                    targets.append(config["dir_data"] + f"{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
+                    targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
 
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"

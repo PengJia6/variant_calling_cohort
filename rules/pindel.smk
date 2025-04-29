@@ -52,14 +52,14 @@ rule pindel_call:
         unpack(get_samples_bam),
         exclude=lambda wildcards: config["refs"][wildcards.ref_name]["exclude"],
     output:
-        protected(config["dir_data"] + "{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel")
+        protected(config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel")
     params:
         extra="",
         dp=5
     log:
-        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.log"
+        config["dir_data"] + "variants_raw/{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.log"
     benchmark:
-        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.{chrom}.pindel.rtime.tsv"
     threads: get_run_threads("pindel_call")
     run:
         pindel = config["software"]["pindel"]
@@ -86,10 +86,10 @@ rule pindel_call:
 #
 rule pindel2vcf:
     input:
-        config["dir_data"] + "{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel",
+        config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel",
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
     output:
-        vcf=config["dir_data"] + "{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf"
+        vcf=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf"
     # vcf=config["dir_data"] + "{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.raw.vcf.gz",
     # sample=config["dir_data"] + "{cohort}/varscan/chroms/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.samples.txt"
     params:
@@ -97,9 +97,9 @@ rule pindel2vcf:
     # samples=get_sample_names
     threads: get_run_threads("pindel2vcf")
     log:
-        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.pindel.{chrom}.pindel2vcf.log"
+        config["dir_data"] + "variants_raw/{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.pindel.{chrom}.pindel2vcf.log"
     benchmark:
-        config["dir_data"] + "{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.pindel.{chrom}.pidnel2vcf.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.pindel.{chrom}.pidnel2vcf.rtime.tsv"
     run:
         pindel2vcf = config["software"]["pindel2vcf"]
         out_prefix = str(output.vcf)[:-4]
@@ -107,11 +107,11 @@ rule pindel2vcf:
 
 rule pidnel_reheadervcf:
     input:
-        vcf=config["dir_data"] + "{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf",
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
 
     output:
-        vcf=config["dir_data"] + "{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf.gz"
+        vcf=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf.gz"
     wildcard_constraints:
         contig="|".join([f"chr{i}" for i in range(1,23)] + ["chrX", "chrY", "chrM"])
     run:

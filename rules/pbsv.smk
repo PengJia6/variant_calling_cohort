@@ -16,12 +16,12 @@ rule pbSV_discovery:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        sig=config["dir_data"] + "{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv.SV.raw.svsig.gz",
+        sig=config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv.SV.raw.svsig.gz",
     log:
-        config["dir_data"] + "{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv_dis.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv_dis.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv_dis.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv_dis.SV.rtime.tsv",
     threads: get_run_threads("")
     run:
         output_pre = "/".join(str(output).split("/")[:-1])
@@ -32,7 +32,7 @@ rule pbSV_discovery:
 
 
 def get_pbsv_contig_sig(wildcards):
-    sigs = expand(config["dir_data"] + "{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv.SV.raw.svsig.gz",
+    sigs = expand(config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv.SV.raw.svsig.gz",
         cohort=wildcards.cohort,ref_name=wildcards.ref_name,sample=wildcards.sample,tech=wildcards.tech,
         contig=config["refs"][wildcards.ref_name]["available_chrom"]
                   )
@@ -46,14 +46,14 @@ rule pbsv_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.raw.vcf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.raw.vcf",
     # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
-        config["dir_data"] + "{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.rtime.tsv",
     threads: get_run_threads("pbsv_call")
     run:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"

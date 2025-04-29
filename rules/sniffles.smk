@@ -16,14 +16,14 @@ rule sniffles_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf",
-        snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf",
+        snf=config["dir_data"] + "variants_raw/{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
-        config["dir_data"] + "{cohort}/sniffles/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/sniffles/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/sniffles/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/sniffles/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.rtime.tsv",
     threads: get_run_threads("sniffles_call")
     run:
         workdir = str(output.vcf)[:-7] + "_tmp"
@@ -47,14 +47,14 @@ rule sniffles2_call:
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
     output:
-        vcfgz=config["dir_data"] + "{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf",
-        snf=config["dir_data"] + "{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.snf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf",
+        snf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.snf",
     log:
-        config["dir_data"] + "{cohort}/sniffles2/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.log",
 
     benchmark:
-        config["dir_data"] + "{cohort}/sniffles2/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.rtime.tsv",
     threads: get_run_threads("sniffles2_call")
     run:
         sniffles2 = config["software"]["sniffles2"]
