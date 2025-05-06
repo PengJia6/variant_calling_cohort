@@ -34,7 +34,7 @@ rule samtools_mpileup:
         config["dir_data"] + "variants_raw/{cohort}/samtools/logs/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup.log"
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/samtools/logs/{cohort}.{ref_name}.{tech}.{chrom}.samtools.mpileup.rtime.tsv"
-    threads: get_run_threads("samtools_mpileup")
+    threads: get_run_threads("__default__")
     run:
         samtools = config["software"]["samtools"]
         shell("echo {samtools} mpileup -r {wildcards.chrom} -B -f {input.ref} -o {output} {input.bams} "

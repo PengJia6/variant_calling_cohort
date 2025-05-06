@@ -23,12 +23,21 @@ def get_samples_bam(wildcards):
             "ref_idx": config["refs"][wildcards.ref_name]["fasta"] + ".fai"
             }
 
+def get_software(name):
+    if "software" not in config:
+        print("[Error] no software set in config file.")
+    if name in config["software"]:
+        return config["software"][name]
+    else:
+        print(f"[Error] no {name} set in config of software.")
 
 def get_run_threads(rule_name):
+    if "threads" not in config:
+        print("[Error] no threads set in config file.")
     if rule_name in config["threads"]:
-        return config["threads"][rule_name]["cpus"]
+        return config["threads"][rule_name]
     else:
-        return config["threads"]["__default__"]["cpus"]
+        return config["threads"]["__default__"]
 
 
 def check_samples(conf_samples):
@@ -110,7 +119,7 @@ def check_config_file(config):
                   "You can setting the config file according the template xxxx")  # TODO add the link
             error = True
         else:
-            config["refs"] = yaml.safe_load(open(config["path_ref_config"]))
+            config["refs"] = yaml.safe_load(open(config["path_ref_config"]))["reference"]
     if "ref_id" not in config:
         print(f"[Error] No reference id (ref_id) setting in config file")
         error = True
@@ -132,16 +141,16 @@ def check_config_file(config):
     else:
         config["software"] = yaml.safe_load(open(config["path_software_config"]))["software"]
 
-    if "path_cluster_config" not in config:
-        config["path_cluster_config"] = "confs/alignment_cluster.yaml"
-    if not os.path.exists(config["path_cluster_config"]):
-        print(f"[Error] The config file {config['path_cluster_config']} for resources"
-              f" ('path_cluster_config' in config.yaml) is not available! "
-              "Please provide a config file (yaml format) to ensure that each rule utilizes a sensible threads! "
-              "You can setting the config file according the template xxxx")  # TODO add the link
-        error = True
-    else:
-        config["threads"] = yaml.safe_load(open(config["path_cluster_config"]))
+    # if "path_cluster_config" not in config:
+    #     config["path_cluster_config"] = "confs/alignment_cluster.yaml"
+    # if not os.path.exists(config["path_cluster_config"]):
+    #     print(f"[Error] The config file {config['path_cluster_config']} for resources"
+    #           f" ('path_cluster_config' in config.yaml) is not available! "
+    #           "Please provide a config file (yaml format) to ensure that each rule utilizes a sensible threads! "
+    #           "You can setting the config file according the template xxxx")  # TODO add the link
+    #     error = True
+    # else:
+    #     config["threads"] = yaml.safe_load(open(config["path_cluster_config"]))
 
     if "path_samples_config" not in config:
         config["path_samples_config"] = ["confs/alignment_samples.yaml"]
@@ -207,7 +216,7 @@ rule samtools_index:
         "{prefix}.bam"
     output:
         "{prefix}.bam.bai"
-    threads: get_run_threads("bwa_align")
+    threads: get_run_threads("samtools_index")
     run:
         samtools = config["software"]["samtools"]
         shell("{samtools} index -@ {threads} {input}")
@@ -217,7 +226,7 @@ rule tabix_vcf:
         "{prefix}.vcf.gz"
     output:
         "{prefix}.vcf.gz.tbi"
-    threads: get_run_threads("tabix_vcf")
+    threads: get_run_threads("__default__")
     run:
         tabix = config["software"]["tabix"]
         shell("{tabix} -@ {threads} {input}")

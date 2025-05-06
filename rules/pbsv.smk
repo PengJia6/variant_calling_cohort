@@ -22,7 +22,7 @@ rule pbSV_discovery:
 
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv_dis.SV.rtime.tsv",
-    threads: get_run_threads("")
+    threads: get_run_threads("pbsv_call")
     run:
         output_pre = "/".join(str(output).split("/")[:-1])
         shell("mkdir -p {output_pre}")
@@ -54,7 +54,7 @@ rule pbsv_call:
 
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.rtime.tsv",
-    threads: get_run_threads("pbsv_call")
+    threads: get_run_threads("__default__")
     run:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"
         pbsv = config["software"]["pbsv"]

@@ -86,7 +86,7 @@ rule pindel_call:
 #
 rule pindel2vcf:
     input:
-        config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel",
+        input=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel",
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
     output:
         vcf=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf"
@@ -95,7 +95,7 @@ rule pindel2vcf:
     params:
         extra="",
     # samples=get_sample_names
-    threads: get_run_threads("pindel2vcf")
+    threads: get_run_threads("__default__")
     log:
         config["dir_data"] + "variants_raw/{cohort}/pindel/logs/{cohort}.{ref_name}.{tech}.pindel.{chrom}.pindel2vcf.log"
     benchmark:
@@ -103,12 +103,12 @@ rule pindel2vcf:
     run:
         pindel2vcf = config["software"]["pindel2vcf"]
         out_prefix = str(output.vcf)[:-4]
-        shell("{pindel2vcf} -P {input} -r {input} -R {wildcards.ref_name} -d 2024 -v {output.vcf} -is 30 -as 100000000 -b -e 10 -ss 5    ")
+        shell("{pindel2vcf} -P {input.input} -r {input} -R {wildcards.ref_name} -d 2024 -v {output.vcf} -is 30 -as 100000000 -b -e 10 -ss 5    ")
 
 rule pidnel_reheadervcf:
     input:
         vcf=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf",
-        ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
+        ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"]+".fai",
 
     output:
         vcf=config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.pindel.{chrom}.SV.raw.vcf.gz"

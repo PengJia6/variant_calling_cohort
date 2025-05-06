@@ -27,7 +27,7 @@ wildcard_constraints:
 # contig="|".join(set([i for i in config["refs"][config['ref_id']]["avaliable"]]))
 
 # print()
-print(config["software"])
+# print(config["software"])
 
 targets = []
 ref_name = config["ref_id"]

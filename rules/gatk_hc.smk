@@ -28,9 +28,10 @@ rule gatk_hc_call:
         regions="",
         dbsnp=[],
     run:
-        gatk = config["software"]["gatk"]
+        gatk = config["software"]["gatk4"]
         java_opt = "" if len(params.java_options) < 2 else " --java-options {params.java_options} "
-        shell("{gatk} {java_opt} HaplotypeCaller {params.extra} --minimum-mapping-quality 8  "
+        gatk_pre_dir="/".join(gatk.split("/")[:-1])
+        shell("export PATH={gatk_pre_dir}:$PATH && {gatk} {java_opt} HaplotypeCaller {params.extra} --minimum-mapping-quality 8  "
               " -R {input.ref} -ERC GVCF -L {wildcards.chrom} -I {input.bam} -O {output.gvcf}"
               " 2>{log} 1>{log}")
 
@@ -75,12 +76,13 @@ rule gatk_combine_gvcf:
         config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.GATK_HC.{chrom}.SNVIndel.gatk_combine_gvcf.rtime.tsv"
 
     run:
-        gatk = config["software"]["gatk"]
+        gatk = config["software"]["gatk4"]
         inputs = " ".join([("-V " + f) for f in input.gvcfs])
         input_bams = " ".join([f"-I {i}" for i in input.bams])
+        gatk_pre_dir="/".join(gatk.split("/")[:-1])
 
         java_opt = "" if len(params.java_options) < 2 else " --java-options {params.java_options} "
-        shell("{gatk} {java_opt} CombineGVCFs {params.extra} "
+        shell("export PATH={gatk_pre_dir}:$PATH && {gatk} {java_opt} CombineGVCFs {params.extra} "
               " {inputs} {input_bams} -R {input.ref} -O {output} 2>{log} 1>{log}")
 
 
@@ -114,8 +116,10 @@ rule gatk_genotype:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/GATK_HC/logs/{cohort}.{ref_name}.{tech}.varscan.{chrom}.SNVIndel.GATK_HC.rtime.tsv"
     run:
-        gatk = config["software"]["gatk"]
+        gatk = config["software"]["gatk4"]
         input_bams = " ".join([f"-I {i}" for i in input.bams])
+        gatk_pre_dir="/".join(gatk.split("/")[:-1])
+
         java_opt = "" if len(params.java_options) < 2 else " --java-options {params.java_options} "
-        shell("{gatk} {java_opt}  GenotypeGVCFs {params.extra} "
+        shell("export PATH={gatk_pre_dir}:$PATH && {gatk} {java_opt}  GenotypeGVCFs {params.extra} "
               " -R {input.ref} -V {input.vcf} {input_bams}  -O {output.vcf} 2>{log} 1>{log}")
