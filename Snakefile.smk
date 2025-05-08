@@ -46,6 +46,9 @@ for cohort, cohort_info in config["samples"].items():
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
+            if caller in ["hificnv"]:
+                for sample in samples:
+                    targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.CNV.ok")
 
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"
@@ -59,6 +62,7 @@ include: "rules/debreak.smk"
 include: "rules/pbsv.smk"
 include: "rules/longtr.smk"
 include: "rules/trgt.smk"
+include: "rules/hificnv.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"
