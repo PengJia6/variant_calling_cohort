@@ -25,8 +25,8 @@ rule hificnv:
         config["dir_data"] + "variants_raw/{cohort}/hificnv/logs/{cohort}.{sample}.{ref_name}.{tech}",
     threads: get_run_threads("hificnv")
     run:
-        ouput_prefix = f"{output}"[:-3]
+        output_prefix = f"{output}"[:-3]
         hificnv = config["software"]["hificnv"]
-        shell("{hificnv}  --bam {input.bam} --ref {input.ref} --exclude {input.exclude} --threads {threads} --output-prefix {ouput_prefix} 2>>{log} 1>>{log} ")
+        shell("{hificnv}  --bam {input.bam} --ref {input.ref} --exclude {input.exclude} --threads {threads} --output-prefix {output_prefix} 2>>{log} 1>>{log} ")
         shell("touch {output}")
 

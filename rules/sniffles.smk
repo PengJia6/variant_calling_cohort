@@ -36,6 +36,9 @@ rule sniffles_call:
         shell("echo {sniffles} -s 3 -m -i {input.bam} -v {vcf_tmp} -n 3 --cluster -f 0.2 --min_homo_af 0.75 --min_het_af 0.2 -t {threads} 2>>{log} 1>>{log}")
         shell("{sniffles} -s 3  -m {input.bam} -v {vcf_tmp} -n 3 -f 0.2 --min_homo_af 0.75 --min_het_af 0.2 -t {threads} 2>>{log} 1>>{log}")
         # shell("{bcftools} sort -Oz -o {output.vcfgz} {output.vcf}  && rm -rf {workdir}")
+        shell("""
+        {bcftools} annotate --header-line '##FILTER=<ID=STRANDBIAS,Description="Strand bias detected">' -o {vcf_tmp} {vcf_tmp}
+        """)
         shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
 

@@ -35,8 +35,8 @@ rule svision_call:
 
         bgzip = config["software"]["bgzip"]
         shell("date > {log}")
-        shell("echo {SVision} -t {threads} -o {workdir} -n {wildcards.sample} -b {input.bam} "
-              "-g {input.ref} -m {my_model} --min_sv_size 30 -s10  2>>{log} 1>>{log}")
+        shell("echo '{SVision} -t {threads} -o {workdir} -n {wildcards.sample} -b {input.bam} "
+              "-g {input.ref} -m {my_model} --min_sv_size 30 -s10'  2>>{log} 1>>{log}")
         shell("{SVision} -t {threads} -o {workdir} -n {wildcards.sample} -b {input.bam} "
               "-g {input.ref} -m {my_model} --min_sv_size 30 -s10  2>>{log} 1>>{log}")
         # shell("{bgzip} -c {workdir}/{wildcards.sample}.svision.s10.vcf > {output.vcfgz}")
