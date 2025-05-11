@@ -29,6 +29,7 @@ rule svision_call:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"
         if os.path.exists(f"{workdir}"):
             shell("rm -rf {workdir}")
+            shell("mkdir -p {workdir}")
         my_model = config["software"]["SVision_model"]
         SVision = config["software"]["SVision"]
         bcftools = config["software"]["bcftools"]

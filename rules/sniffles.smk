@@ -18,7 +18,6 @@ rule sniffles_call:
     output:
         vcfgz=config["dir_data"] + "variants_raw/{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz",
         vcf=config["dir_data"] + "variants_raw/{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf",
-        snf=config["dir_data"] + "variants_raw/{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
         config["dir_data"] + "variants_raw/{cohort}/sniffles/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.log",
 
@@ -28,8 +27,9 @@ rule sniffles_call:
     run:
         workdir = str(output.vcf)[:-7] + "_tmp"
         # vcf = f"{output.vcfg}"[:-3]
-        shell("mkdir -p {workdir}")
+        # shell("mkdir -p {workdir}")
         vcf_tmp=f"{output.vcf}.tmp.vcf"
+        vcf_tmp2=f"{output.vcf}.tmp2.vcf"
         sniffles = config["software"]["sniffles"]
         bcftools = config["software"]["bcftools"]
         shell("date > {log}")
@@ -37,9 +37,9 @@ rule sniffles_call:
         shell("{sniffles} -s 3  -m {input.bam} -v {vcf_tmp} -n 3 -f 0.2 --min_homo_af 0.75 --min_het_af 0.2 -t {threads} 2>>{log} 1>>{log}")
         # shell("{bcftools} sort -Oz -o {output.vcfgz} {output.vcf}  && rm -rf {workdir}")
         shell("""
-        {bcftools} annotate --header-line '##FILTER=<ID=STRANDBIAS,Description="Strand bias detected">' -o {vcf_tmp} {vcf_tmp}
+        {bcftools} annotate --header-line '##FILTER=<ID=STRANDBIAS,Description="Strand bias detected">' -o {vcf_tmp2} {vcf_tmp}
         """)
-        shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
+        shell("{bcftools} sort  -o {output.vcf} {vcf_tmp2}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
 
 
@@ -52,7 +52,6 @@ rule sniffles2_call:
     output:
         vcfgz=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz",
         vcf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf",
-        snf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.snf",
     log:
         config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.log",
 
