@@ -252,7 +252,7 @@ rule SNVIndel_chrom_concat:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC|pindel"
+        caller="varscan|bcftools|GATK_HC|pindel|manta"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]

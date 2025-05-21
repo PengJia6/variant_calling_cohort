@@ -30,28 +30,28 @@ rule manta_conf:
     run:
         import pysam
         prefix = str(output.prefix)[:-15]
-        shell("mkdri -p {prefix}")
+        shell("mkdir -p {prefix}")
         manta = config["software"]["manta"]
         bgzip = config["software"]["bgzip"]
         tabix = config["software"]["tabix"]
 
         fasta = pysam.FastaFile(f"{input.ref}")
-        chrom_list = {j: i for i, j in zip(fasta.references,fasta.lengths)}
+        chrom_list = { i:j for i, j in zip(fasta.references,fasta.lengths)}
         fasta.close()
         bed_chrom = open(f"{prefix}/{wildcards.chrom}.bed","w")
         bed_chrom.write(f"{wildcards.chrom}\t0\t{chrom_list[wildcards.chrom]}\n")
         bed_chrom.close()
-        shell("{bzip} {prefix}/{wildcards.chrom}.bed")
+        shell("{bgzip} {prefix}/{wildcards.chrom}.bed")
         shell("{tabix} {prefix}/{wildcards.chrom}.bed.gz")
-        bams_str=" ".join([f"--bam {i}" for i in input.bam])
-        shell("{manta} --bam {input.bams} --referenceFasta {input.ref} "
+        bams_str=" ".join([f"--bam {i}" for i in input.bams])
+        shell("{manta} {bams_str} --referenceFasta {input.ref} "
               "--runDir {prefix} --callRegions {prefix}/{wildcards.chrom}.bed.gz 2>{log} 1>{log}")
 
 rule manta:
     input:
         prefix=rules.manta_conf.output.prefix
     output:
-        vcfgz=config["dir_data"] + "variants_raw/{cohort}/manta/chroms/{cohort}.{ref_name}.{tech}.{chrom}.manta.raw.vcf.gz"
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/manta/chroms/{cohort}.{ref_name}.{tech}.manta.{chrom}.SV.raw.vcf.gz"
     log:
         config["dir_data"] + "variants_raw/{cohort}/manta/logs/{cohort}.{ref_name}.{tech}.{chrom}.manta.log"
     benchmark:

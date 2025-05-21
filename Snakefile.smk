@@ -68,6 +68,7 @@ include: "rules/pbsv.smk"
 include: "rules/longtr.smk"
 include: "rules/trgt.smk"
 include: "rules/hificnv.smk"
+include: "rules/manta.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"
