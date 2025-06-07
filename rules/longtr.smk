@@ -17,19 +17,19 @@ rule longtr_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "variants_raw/{cohort}/longtr/samples/{cohort}.{sample}.{ref_name}.{tech}.longtr.TR.raw.vcf.gz",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/longtr/samples/chroms/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.raw.vcf.gz",
     log:
-        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.TR.log",
+        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.log",
 
     benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.TR.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.rtime.tsv",
     threads: get_run_threads("longtr_call")
     run:
         # max_tr_len = config["max_tr_len"]
         longtr = config["software"]["longtr"]
         bcftools = config["software"]["bcftools"]
         vcf_tmp = f"{output.vcfgz}"[:-8] + "tmp.vcf.gz"
-        shell("{longtr} --bams {input.bam} --fasta {input.ref} --regions {input.bed} --tr-vcf {vcf_tmp} 	--output-gls "
+        shell("{longtr} --bams {input.bam} --fasta {input.ref} --regions {input.bed} --tr-vcf {vcf_tmp} --chrom {wildcards.chrom}	--output-gls "
               "--max-tr-len 10000 --log {log}")
         shell("{bcftools} sort  -o {output.vcfgz} {vcf_tmp}")
 
