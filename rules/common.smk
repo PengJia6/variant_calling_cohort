@@ -11,6 +11,7 @@ import os.path
 
 import yaml
 
+
 # used by varscan, pindel
 def get_samples_bam(wildcards):
     bams = []
@@ -23,6 +24,7 @@ def get_samples_bam(wildcards):
             "ref_idx": config["refs"][wildcards.ref_name]["fasta"] + ".fai"
             }
 
+
 def get_software(name):
     if "software" not in config:
         print("[Error] no software set in config file.")
@@ -30,6 +32,7 @@ def get_software(name):
         return config["software"][name]
     else:
         print(f"[Error] no {name} set in config of software.")
+
 
 def get_run_threads(rule_name):
     if "threads" not in config:
@@ -61,7 +64,7 @@ def check_samples(conf_samples):
     for cohort, cohort_info in samples_info.items():
         cohort_names.append(cohort)
         this_techs = []
-        if "path" not in cohort_info or "info" not in cohort_info or "tech" not in cohort_info:
+        if "path" not in cohort_info or "tech" not in cohort_info:  # "info" not in cohort_info or
             print(f"[Error] The sample config setting of {cohort} is not correct!\n"
                   f"e.g.\n"
                   f"-------------------------\n"
@@ -237,6 +240,7 @@ def get_chroms_raw_vcf_merged_vcfs(wildcards):
     vcfs = []
     vcfs_idx = []
     for chrom in chroms:
+        if wildcards.caller in ["hipstr"] and chrom in ["chrM"]: continue
         vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
         vcfs_idx.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
     return {"vcf": vcfs, "vcf_idx": vcfs_idx}
@@ -248,11 +252,11 @@ rule SNVIndel_chrom_concat:
     output:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
     log:
-        config["dir_data"] + "variants_raw/{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.log"
+        config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.log"
     benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC|pindel|manta"
+        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]

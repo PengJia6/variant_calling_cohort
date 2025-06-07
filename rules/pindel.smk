@@ -103,7 +103,7 @@ rule pindel2vcf:
     run:
         pindel2vcf = config["software"]["pindel2vcf"]
         out_prefix = str(output.vcf)[:-4]
-        shell("{pindel2vcf} -P {input.input} -r {input} -R {wildcards.ref_name} -d 2024 -v {output.vcf} -is 30 -as 100000000 -b -e 10 -ss 5    ")
+        shell("{pindel2vcf} -P {input.input} -r {input.ref} -R {wildcards.ref_name} -d 2024 -v {output.vcf} -is 30 -as 100000000 -b -e 10 -ss 5    ")
 
 rule pidnel_reheadervcf:
     input:
@@ -116,7 +116,8 @@ rule pidnel_reheadervcf:
         contig="|".join([f"chr{i}" for i in range(1,23)] + ["chrX", "chrY", "chrM"])
     run:
         bcftools = config["software"]["bcftools"]
-        shell("{bcftools} reheader --fai {input.ref} -Oz {input.vcf} > {output}")
+        bgzip = config["software"]["bgzip"]
+        shell("{bcftools} reheader --fai {input.ref} {input.vcf} | bgzip > {output}")
 
 
 # def get_vcfs_for_pindel_merge_vcf(wildcards):

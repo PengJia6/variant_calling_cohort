@@ -52,6 +52,7 @@ rule sniffles2_call:
     output:
         vcfgz=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz",
         vcf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.vcf",
+        snf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.raw.snf",
     log:
         config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{sample}.{ref_name}.{tech}.sniffles2.SV.log",
 

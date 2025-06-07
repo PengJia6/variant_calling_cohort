@@ -57,10 +57,10 @@ rule manta:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/manta/logs/{cohort}.{ref_name}.{tech}.{chrom}.manta.rtime.tsv"
 
-    threads: get_run_threads("manta")
+    threads: get_run_threads("manta_call")
     run:
         prefix = str(input.prefix)[:-15]
-        tmp_vcf = f"{prefix}/results/variants/candidateSV.vcf.gz",
+        tmp_vcf = f"{prefix}/results/variants/diploidSV.vcf.gz",
         configmanta = config["software"]["manta"]
         manta_pre = "/".join(f"{configmanta}".split("/")[:-1])
         shell("export PATH={manta_pre}:$PATH && "

@@ -56,7 +56,7 @@ def get_conbine_gvcf_input(wildcards):
             "ref_idx": config["refs"][wildcards.ref_name]["fasta"] + ".fai",
             "gvcfs": vcfs
             }
-    return vcfs
+    # return vcfs
 
 
 #

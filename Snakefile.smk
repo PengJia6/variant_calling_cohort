@@ -49,8 +49,8 @@ for cohort, cohort_info in config["samples"].items():
             if caller in ["hificnv"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.CNV.ok")
-            if caller in ["trgt", ]:
-                targets.append(config["dir_data"] + f"variants_raw/{cohort}/trgt/{cohort}.{ref_name}.{tech}.trgt.TR.raw.vcf.gz.tbi",)
+            if caller in ["trgt", "gangstr", "hipstr"]:
+                targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi",)
             if caller in ["longtr"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")
@@ -69,6 +69,8 @@ include: "rules/longtr.smk"
 include: "rules/trgt.smk"
 include: "rules/hificnv.smk"
 include: "rules/manta.smk"
+include: "rules/gangstr.smk"
+include: "rules/hipstr.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"

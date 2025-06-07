@@ -12,39 +12,46 @@ rule longtr_call:
         bai=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample] + ".bai",
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
+        bed=lambda wildcards: config["refs"][wildcards.ref_name]["tandem_repeat"]["LongTR"]
     # bam=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam",
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "variants_raw/{cohort}/longtr/samples/{cohort}.{sample}.{ref_name}.{tech}.longtr.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "variants_raw/{cohort}/longtr/samples/{cohort}.{sample}.{ref_name}.{tech}.longtr.SV.raw.vcf",
-    # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/longtr/samples/{cohort}.{sample}.{ref_name}.{tech}.longtr.TR.raw.vcf.gz",
     log:
-        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.TR.log",
 
     benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.TR.rtime.tsv",
     threads: get_run_threads("longtr_call")
     run:
-        workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"
+        # max_tr_len = config["max_tr_len"]
         longtr = config["software"]["longtr"]
         bcftools = config["software"]["bcftools"]
-        minimap2 = config["software"]["minimap2"]
-        wtdbg2 = config["software"]["wtdbg2"]
-        prefix = ""
-        for i in [longtr, minimap2, wtdbg2]:
-            prefix += "/".join(i.split("/")[:-1])
-        if os.path.exists(f"{workdir}"):
-            shell("rm -rf {workdir}")
-        shell("mkdir -p {workdir}")
-        shell("date > {log}")
-        shell("""
-             echo  {longtr} -t {threads} --bam {input.bam} -o {workdir}/ --rescue_large_ins --rescue_dup --poa --ref {input.ref} --min_support 3 2>>{log} 1>>{log}  
-                """)
-        shell("""
-        export PATH={prefix}$PATH && 
-        {longtr} -t {threads} --bam {input.bam} -o {workdir}/ --rescue_large_ins --rescue_dup --poa --ref {input.ref} --min_support 3 2>>{log} 1>>{log}  
-        """)
-        shell("date > {log}")
-        shell("{bcftools} sort  -o {output.vcf} {workdir}/*vcf")
-        shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
+        vcf_tmp = f"{output.vcfgz}"[:-8] + "tmp.vcf.gz"
+        shell("{longtr} --bams {input.bam} --fasta {input.ref} --regions {input.bed} --tr-vcf {vcf_tmp} 	--output-gls "
+              "--max-tr-len 10000 --log {log}")
+        shell("{bcftools} sort  -o {output.vcfgz} {vcf_tmp}")
+
+
+# workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"
+# bcftools = config["software"]["bcftools"]
+# minimap2 = config["software"]["minimap2"]
+# wtdbg2 = config["software"]["wtdbg2"]
+# prefix = ""
+# for i in [longtr, minimap2, wtdbg2]:
+#     prefix += "/".join(i.split("/")[:-1])
+# if os.path.exists(f"{workdir}"):
+#     shell("rm -rf {workdir}")
+# shell("mkdir -p {workdir}")
+# shell("date > {log}")
+# shell("""
+#      echo  {longtr} -t {threads} --bam {input.bam} -o {workdir}/ --rescue_large_ins --rescue_dup --poa --ref {input.ref} --min_support 3 2>>{log} 1>>{log}
+#         """)
+# shell("""
+# export PATH={prefix}$PATH &&
+# {longtr} -t {threads} --bam {input.bam} -o {workdir}/ --rescue_large_ins --rescue_dup --poa --ref {input.ref} --min_support 3 2>>{log} 1>>{log}
+# """)
+# shell("date > {log}")
+# shell("{bcftools} sort  -o {output.vcf} {workdir}/*vcf")
+# shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
