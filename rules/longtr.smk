@@ -8,8 +8,8 @@
 # ======================================================================================================================
 rule longtr_call:
     input:
-        bam=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample],
-        bai=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample] + ".bai",
+        unpack(get_samples_bam),
+        # bai=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample] + ".bai",
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
         bed=lambda wildcards: config["refs"][wildcards.ref_name]["tandem_repeat"]["LongTR"]
@@ -17,18 +17,20 @@ rule longtr_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "variants_raw/{cohort}/longtr/samples/chroms/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.raw.vcf.gz",
+        # config["dir_data"] + "variants_raw/{cohort}/longtr/samples/chroms/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.raw.vcf.gz",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/longtr/chroms/{cohort}.{ref_name}.{tech}.longtr.{chrom}.TR.raw.vcf.gz"
+        # vcfgz=config["dir_data"] + "variants_raw/{cohort}/hipstr/chroms/{cohort}.{ref_name}.{tech}.hipstr.{chrom}.TR.raw.vcf.gz",
     log:
-        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.log",
+        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{ref_name}.{tech}.{chrom}.longtr.TR.log",
 
     benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{sample}.{ref_name}.{tech}.longtr.{chrom}.TR.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/longtr/logs/{cohort}.{ref_name}.{tech}.{chrom}.longtr.TR.rtime.tsv",
     threads: get_run_threads("longtr_call")
     run:
         # max_tr_len = config["max_tr_len"]
         longtr = config["software"]["longtr"]
         bcftools = config["software"]["bcftools"]
-        vcf_tmp = f"{output.vcfgz}"[:-8] + "tmp.vcf.gz"
+        vcf_tmp = f"{output.vcfgz}"[:-6] + "tmp.vcf.gz"
         shell("{longtr} --bams {input.bam} --fasta {input.ref} --regions {input.bed} --tr-vcf {vcf_tmp} --chrom {wildcards.chrom}	--output-gls "
               "--max-tr-len 10000 --log {log}")
         shell("{bcftools} sort  -o {output.vcfgz} {vcf_tmp}")
