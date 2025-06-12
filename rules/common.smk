@@ -257,7 +257,7 @@ rule cohort_vcf_chrom_concat:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|longtr"
+        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|longtr|gangstr"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
@@ -269,7 +269,7 @@ def get_chroms_raw_vcf_merged_vcfs_sample(wildcards):
     vcfs = []
     vcfs_idx = []
     for chrom in chroms:
-        if wildcards.caller in ["longtr"] and chrom in ["chrM"]: continue
+        if wildcards.caller in ["longtr", "gangstr"] and chrom in ["chrM"]: continue
         vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/chroms/"
                                          f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
         vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/chroms/"

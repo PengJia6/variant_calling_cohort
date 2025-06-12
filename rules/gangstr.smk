@@ -16,11 +16,7 @@ rule gangstr_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-
         vcfgz=config["dir_data"] + "variants_raw/{cohort}/gangstr/chroms/{cohort}.{ref_name}.{tech}.gangstr.{chrom}.TR.raw.vcf.gz",
-    # vcfgz=config["dir_data"] + "variants_raw/{cohort}/gangstr/samples/{cohort}.{sample}.{ref_name}.{tech}.gangstr.TR.raw.vcf.gz",
-    # vcf=config["dir_data"] + "variants_raw/{cohort}/trgt/samples/{cohort}.{sample}.{ref_name}.{tech}.trgt.TR.raw.vcf",
-    # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
         config["dir_data"] + "variants_raw/{cohort}/gangstr/logs/{cohort}.{ref_name}.{tech}.{chrom}.gangstr.log"
     benchmark:
