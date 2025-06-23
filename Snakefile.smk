@@ -40,9 +40,9 @@ for cohort, cohort_info in config["samples"].items():
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["pindel", "manta", "sniffles2"]:
+            if caller in ["pindel", "manta", "sniffles2", "pbsv"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
-            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "pbsv"]:
+            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", ]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")

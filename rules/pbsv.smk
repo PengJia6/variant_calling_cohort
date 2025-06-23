@@ -31,15 +31,15 @@ rule pbSV_discovery:
         shell("{pbsv} discover -s {wildcards.sample} -b {input.ref}  {input.bam} {output.sig} 2>>{log} 1>>{log} ")
 
 
-def get_pbsv_contig_sig(wildcards):
-    sigs = expand(config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv.SV.raw.svsig.gz",
-        cohort=wildcards.cohort,ref_name=wildcards.ref_name,sample=wildcards.sample,tech=wildcards.tech,
-        contig=config["refs"][wildcards.ref_name]["available_chrom"]
-                  )
-    return sigs
+# def get_pbsv_contig_sig(wildcards):
+#     sigs = expand(config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}/chroms/{contig}.pbsv.SV.raw.svsig.gz",
+#         cohort=wildcards.cohort,ref_name=wildcards.ref_name,sample=wildcards.sample,tech=wildcards.tech,
+#         contig=config["refs"][wildcards.ref_name]["available_chrom"]
+#                   )
+#     return sigs
 
 
-def get_sniffles2_sample_call(wildcards):
+def get_pbsv_merged_sample_call(wildcards):
     outputs = []
     for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
 
@@ -52,7 +52,7 @@ def get_sniffles2_sample_call(wildcards):
 
 rule pbsv_call:
     input:
-        sigs=get_pbsv_contig_sig,
+        sigs=get_pbsv_merged_sample_call,
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
     # bam=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam",
