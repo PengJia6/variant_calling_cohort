@@ -37,6 +37,19 @@ def get_pbsv_contig_sig(wildcards):
         contig=config["refs"][wildcards.ref_name]["available_chrom"]
                   )
     return sigs
+
+
+def get_sniffles2_sample_call(wildcards):
+    outputs = []
+    for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
+
+        # outputs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/sniffles2/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.sniffles2.SV.raw.snf",)
+        outputs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/pbsv/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}/chroms/{wildcards.chrom}.pbsv.SV.raw.svsig.gz")
+    return outputs
+
+    # f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
+
+
 rule pbsv_call:
     input:
         sigs=get_pbsv_contig_sig,
@@ -46,14 +59,14 @@ rule pbsv_call:
     # bai=config["dir_aligned_reads"] + "{prefix}{ref_name}{suffix}.bam.bai",
     # ref=config["dir_ref"] + "{ref_name}.fasta",
     output:
-        vcfgz=config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.raw.vcf.gz",
-        vcf=config["dir_data"] + "variants_raw/{cohort}/pbsv/samples/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.raw.vcf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/pbsv/chroms/{cohort}.{ref_name}.{tech}.pbsv.{chrom}.SV.raw.vcf.gz",
+        vcf=config["dir_data"] + "variants_raw/{cohort}/pbsv/chroms/{cohort}.{ref_name}.{tech}.pbsv.{chrom}.SV.raw.vcf"
     # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
-        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.log",
+        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{ref_name}.{tech}.{chrom}.pbsv_call.SV.log",
 
     benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{sample}.{ref_name}.{tech}.pbsv.SV.rtime.tsv",
+        config["dir_data"] + "variants_raw/{cohort}/pbsv/logs/{cohort}.{ref_name}.{tech}.{chrom}.pbsv_call.SV.rtime.tsv",
     threads: get_run_threads("__default__")
     run:
         workdir = str(output.vcfgz).rstrip(".vcf.gz") + "_tmp"

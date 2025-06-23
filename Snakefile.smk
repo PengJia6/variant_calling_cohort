@@ -40,20 +40,20 @@ for cohort, cohort_info in config["samples"].items():
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["pindel", "manta"]:
+            if caller in ["pindel", "manta", "sniffles2"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
-            if caller in ["sniffles", "sniffles2", "cutesv", "svision", "svision_pro", "debreak", "pbsv"]:
+            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "pbsv"]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["hificnv"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.CNV.ok")
-            if caller in ["trgt", "gangstr", "hipstr","longtr"]:
+            if caller in ["trgt", "gangstr", "hipstr", "longtr"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi",)
-            # if caller in ["longtr"]:
-            #     for sample in samples:
-            #         targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")
+# if caller in ["longtr"]:
+#     for sample in samples:
+#         targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")
 
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"

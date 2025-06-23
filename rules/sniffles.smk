@@ -28,8 +28,8 @@ rule sniffles_call:
         workdir = str(output.vcf)[:-7] + "_tmp"
         # vcf = f"{output.vcfg}"[:-3]
         # shell("mkdir -p {workdir}")
-        vcf_tmp=f"{output.vcf}.tmp.vcf"
-        vcf_tmp2=f"{output.vcf}.tmp2.vcf"
+        vcf_tmp = f"{output.vcf}.tmp.vcf"
+        vcf_tmp2 = f"{output.vcf}.tmp2.vcf"
         sniffles = config["software"]["sniffles"]
         bcftools = config["software"]["bcftools"]
         shell("date > {log}")
@@ -62,7 +62,7 @@ rule sniffles2_call:
     run:
         sniffles2 = config["software"]["sniffles2"]
         bcftools = config["software"]["bcftools"]
-        vcf_tmp=f"{output.vcf}.tmp.vcf"
+        vcf_tmp = f"{output.vcf}.tmp.vcf"
 
         shell("date >{log}")
         shell("echo {sniffles2} --minsupport 3 -i {input.bam} -v {output.vcf} --snf {output.snf} --reference {input.ref} "
@@ -71,4 +71,39 @@ rule sniffles2_call:
               " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
         shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
-        # shell("{bcftools} sort -Oz -o {output.vcfgz} {output.vcf}")
+
+
+# shell("{bcftools} sort -Oz -o {output.vcfgz} {output.vcf}")
+
+def get_sniffles2_sample_call(wildcards):
+    outputs = []
+    for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
+        outputs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/sniffles2/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.sniffles2.SV.raw.snf",)
+    return outputs
+
+
+rule sniffles2_call_merge:
+    input:
+        snfs=get_sniffles2_sample_call,
+        ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
+        ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
+    output:
+        config["dir_data"] + "variants_raw/{cohort}/sniffles2/{cohort}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz"
+    log:
+        config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{ref_name}.{tech}.sniffles2.merge.SV.log",
+
+    benchmark:
+        config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{ref_name}.{tech}.sniffles2.merge.SV.rtime.tsv",
+    threads: get_run_threads("sniffles2_call")
+    run:
+        sniffles2 = config["software"]["sniffles2"]
+        bcftools = config["software"]["bcftools"]
+        vcf_tmp = f"{output.vcf}.tmp.vcf"
+
+        shell("date >{log}")
+        shell("echo {sniffles2} --minsupport 3 -i {input.snfs} -v {output.vcf}  --reference {input.ref} "
+              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
+        shell("{sniffles2} --minsupport 3 -i {input.snfs} -v {vcf_tmp} --reference {input.ref} "
+              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
+        shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
+        shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
