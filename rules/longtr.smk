@@ -28,10 +28,12 @@ rule longtr_call:
     threads: get_run_threads("longtr_call")
     run:
         # max_tr_len = config["max_tr_len"]
+        bam_str = ",".join([i for i in input.bams])
+
         longtr = config["software"]["longtr"]
         bcftools = config["software"]["bcftools"]
         vcf_tmp = f"{output.vcfgz}"[:-6] + "tmp.vcf.gz"
-        shell("{longtr} --bams {input.bam} --fasta {input.ref} --regions {input.bed} --tr-vcf {vcf_tmp} --chrom {wildcards.chrom}	--output-gls "
+        shell("{longtr} --bams {bam_str} --fasta {input.ref} --regions {input.bed} --tr-vcf {vcf_tmp} --chrom {wildcards.chrom}	--output-gls "
               "--max-tr-len 10000 --log {log}")
         shell("{bcftools} sort  -o {output.vcfgz} {vcf_tmp}")
 

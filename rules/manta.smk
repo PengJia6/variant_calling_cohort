@@ -47,7 +47,7 @@ rule manta_conf:
         shell("{manta} {bams_str} --referenceFasta {input.ref} "
               "--runDir {prefix} --callRegions {prefix}/{wildcards.chrom}.bed.gz 2>{log} 1>{log}")
 
-rule manta:
+rule manta_call:
     input:
         prefix=rules.manta_conf.output.prefix
     output:

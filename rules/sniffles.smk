@@ -68,7 +68,7 @@ rule sniffles2_call:
         shell("echo {sniffles2} --minsupport 3 -i {input.bam} -v {output.vcf} --snf {output.snf} --reference {input.ref} "
               " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
         shell("{sniffles2} --minsupport 3 -i {input.bam} -v {vcf_tmp} --snf {output.snf} --reference {input.ref} "
-              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
+              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5 --allow-overwrite   2>>{log} 1>>{log}")
         shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
 
@@ -88,7 +88,8 @@ rule sniffles2_call_merge:
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
     output:
-        config["dir_data"] + "variants_raw/{cohort}/sniffles2/{cohort}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz"
+        vcf=config["dir_data"] + "variants_raw/{cohort}/sniffles2/{cohort}.{ref_name}.{tech}.sniffles2.SV.raw.vcf",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/sniffles2/{cohort}.{ref_name}.{tech}.sniffles2.SV.raw.vcf.gz"
     log:
         config["dir_data"] + "variants_raw/{cohort}/sniffles2/logs/{cohort}.{ref_name}.{tech}.sniffles2.merge.SV.log",
 
@@ -99,11 +100,10 @@ rule sniffles2_call_merge:
         sniffles2 = config["software"]["sniffles2"]
         bcftools = config["software"]["bcftools"]
         vcf_tmp = f"{output.vcf}.tmp.vcf"
-
         shell("date >{log}")
         shell("echo {sniffles2} --minsupport 3 -i {input.snfs} -v {output.vcf}  --reference {input.ref} "
-              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
+              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5 --allow-overwrite 2>>{log} 1>>{log}")
         shell("{sniffles2} --minsupport 3 -i {input.snfs} -v {vcf_tmp} --reference {input.ref} "
-              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
+              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5 --allow-overwrite 2>>{log} 1>>{log}")
         shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")

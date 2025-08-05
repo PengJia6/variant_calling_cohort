@@ -257,11 +257,11 @@ rule cohort_vcf_chrom_concat:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|longtr|gangstr|pbsv"
+        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|longtr|gangstr|pbsv|freebayes|strelka|arcsv"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
-        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
+        shell("{bcftools} concat -a  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
 
 
 def get_chroms_raw_vcf_merged_vcfs_sample(wildcards):

@@ -38,9 +38,11 @@ for cohort, cohort_info in config["samples"].items():
         callers = cohort_info["tech"][tech]["caller"]
         samples = [i for i in tech_info]
         for caller in callers:
-            if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant"]:
+            if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant", "freebayes", "strelka"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["pindel", "manta", "sniffles2", "pbsv"]:
+            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss"]:
+                targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
+            if caller in ["arcsv"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", ]:
                 for sample in samples:
@@ -57,9 +59,14 @@ for cohort, cohort_info in config["samples"].items():
 
 include: "rules/varscan.smk"
 include: "rules/bcftools.smk"
+include: "rules/freebayes.smk"
+include: "rules/strelka.smk"
 include: "rules/gatk_hc.smk"
 include: "rules/deepvariant.smk"
 include: "rules/pindel.smk"
+include: "rules/gridss.smk"
+include: "rules/arcsv.smk"
+
 include: "rules/sniffles.smk"
 include: "rules/cutesv.smk"
 include: "rules/svision.smk"
