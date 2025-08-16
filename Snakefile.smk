@@ -40,11 +40,15 @@ for cohort, cohort_info in config["samples"].items():
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant", "freebayes", "strelka"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss"]:
+            if caller in ["longshot","clair3"]:
+                for sample in samples:
+                    targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
+
+            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss","smoove","whamg","wham"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["arcsv"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
-            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", ]:
+            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "svim" ]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
@@ -63,15 +67,22 @@ include: "rules/freebayes.smk"
 include: "rules/strelka.smk"
 include: "rules/gatk_hc.smk"
 include: "rules/deepvariant.smk"
+include: "rules/longshot.smk"
+include: "rules/clair3.smk"
+
 include: "rules/pindel.smk"
 include: "rules/gridss.smk"
 include: "rules/arcsv.smk"
+include: "rules/smoove.smk"
+include: "rules/wham.smk"
 
 include: "rules/sniffles.smk"
 include: "rules/cutesv.smk"
 include: "rules/svision.smk"
 include: "rules/debreak.smk"
 include: "rules/pbsv.smk"
+include: "rules/svim.smk"
+
 include: "rules/longtr.smk"
 include: "rules/trgt.smk"
 include: "rules/hificnv.smk"

@@ -296,3 +296,38 @@ rule sample_vcf_chrom_concat:
     run:
         bcftools = config["software"]["bcftools"]
         shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
+
+
+def get_chroms_raw_vcf_merged_vcfs_sample_new(wildcards):
+    chroms = config["refs"][wildcards.ref_name]["available_chrom"]
+    vcfs = []
+    vcfs_idx = []
+    for chrom in chroms:
+        if wildcards.caller in ["longtr", "gangstr"] and chrom in ["chrM"]: continue
+        # config["dir_data"] + "variants_raw/{cohort}/longshot/samples/{cohort}.{sample}.{ref_name}.{tech}/{chrom}.longshot.SNVIndel.raw.vcf.gz",
+        vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/"
+                                         f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}/{chrom}.{wildcards.caller}.{wildcards.suffix}.raw.vcf.gz")
+        vcfs_idx.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/"
+                                             f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}/{chrom}.{wildcards.caller}.{wildcards.suffix}.raw.vcf.gz.tbi")
+
+    # vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
+    # vcfs_idx.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
+    return {"vcf": vcfs, "vcf_idx": vcfs_idx}
+
+
+rule sample_vcf_chrom_concat_new:
+    input:
+        unpack(get_chroms_raw_vcf_merged_vcfs_sample_new)
+    output:
+        # config["dir_data"] + "variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
+        config["dir_data"] + "variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz",
+    log:
+        config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.log"
+    benchmark:
+        config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
+    wildcard_constraints:
+        caller="longshot|clair3"
+    threads: get_run_threads("SNVIndel_chrom_concat")
+    run:
+        bcftools = config["software"]["bcftools"]
+        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
