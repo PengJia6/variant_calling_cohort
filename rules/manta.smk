@@ -30,6 +30,8 @@ rule manta_conf:
     run:
         import pysam
         prefix = str(output.prefix)[:-15]
+        if os.path.exists(f"{prefix}"):
+            shell("rm -rf {prefix}")
         shell("mkdir -p {prefix}")
         manta = config["software"]["manta"]
         bgzip = config["software"]["bgzip"]
