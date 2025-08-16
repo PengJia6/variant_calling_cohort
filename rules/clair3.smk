@@ -14,7 +14,7 @@ rule clair3_call:
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
     output:
         vcfgz=config["dir_data"] + "variants_raw/{cohort}/clair3/samples/{cohort}.{sample}.{ref_name}.{tech}/{chrom}.clair3.SNVIndel.raw.vcf.gz",
-        vcf=config["dir_data"] + "variants_raw/{cohort}/clair3/samples/{cohort}.{sample}.{ref_name}.{tech}/{chrom}.clair3.SNVIndel.raw.vcf",
+        # vcf=config["dir_data"] + "variants_raw/{cohort}/clair3/samples/{cohort}.{sample}.{ref_name}.{tech}/{chrom}.clair3.SNVIndel.raw.vcf",
     # snf=config["dir_data"] + "{cohort}/sniffles/samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.snf",
     log:
         config["dir_data"] + "variants_raw/{cohort}/clair3/logs/{cohort}.{sample}.{ref_name}.{tech}/{chrom}.SNVIndel.SV.log",
@@ -38,7 +38,7 @@ rule clair3_call:
         else:
             print("NO available model provided")
             exit()
-        workdir = f"{output.vcf}"[:-4]
+        workdir = f"{output.vcfgz}"[:-7]
 
         if os.path.exists(f"{workdir}"):
             shell("rm -rf {workdir}")
