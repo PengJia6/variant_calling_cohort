@@ -37,7 +37,7 @@ rule sniffles_call:
         shell("{sniffles} -s 3  -m {input.bam} -v {vcf_tmp} -n 3 -f 0.2 --min_homo_af 0.75 --min_het_af 0.2 -t {threads} 2>>{log} 1>>{log}")
         # shell("{bcftools} sort -Oz -o {output.vcfgz} {output.vcf}  && rm -rf {workdir}")
         shell("""
-        {bcftools} annotate --header-line '##FILTER=<ID=STRANDBIAS,Description="Strand bias detected">' -o {vcf_tmp2} {vcf_tmp}
+        {bcftools} annotate --force --header-line '##FILTER=<ID=STRANDBIAS,Description="Strand bias detected">' -o {vcf_tmp2} {vcf_tmp}
         """)
         shell("{bcftools} sort  -o {output.vcf} {vcf_tmp2}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
@@ -68,7 +68,7 @@ rule sniffles2_call:
         shell("echo {sniffles2} --minsupport 3 -i {input.bam} -v {output.vcf} --snf {output.snf} --reference {input.ref} "
               " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5   2>>{log} 1>>{log}")
         shell("{sniffles2} --minsupport 3 -i {input.bam} -v {vcf_tmp} --snf {output.snf} --reference {input.ref} "
-              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5 --allow-overwrite   2>>{log} 1>>{log}")
+              " -t {threads} --minsvlen 10 --mapq 20  --qc-coverage 5 --allow-overwrite   2>{log} 1>{log}")
         shell("{bcftools} sort  -o {output.vcf} {vcf_tmp}")
         shell("{bcftools} view -Oz -o {output.vcfgz} {output.vcf}")
 
