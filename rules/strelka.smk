@@ -1,0 +1,72 @@
+rule strelka_conf:
+    input:
+        unpack(get_samples_bam),
+        exclude=lambda wildcards: config["refs"][wildcards.ref_name]["exclude"],
+        ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
+    output:
+        prefix=config["dir_data"] + "variants_raw/{cohort}/strelka/chroms/{cohort}.{ref_name}.{tech}.{chrom}.strelka/runWorkflow.py"
+    params:
+        extra="",
+    # dp=5
+    log:
+        config["dir_data"] + "variants_raw/{cohort}/strelka/logs/{cohort}.{ref_name}.{tech}.{chrom}.strelka_conf.log"
+    benchmark:
+        config["dir_data"] + "variants_raw/{cohort}/strelka/logs/{cohort}.{ref_name}.{tech}.{chrom}.strelka_conf.rtime.tsv"
+    threads: get_run_threads("manta_call")
+    # input:
+    #     bam=config["dir_aligned_reads"] + "{prefix}.{ref_name}.{suffix}.bam",
+    #     bai=config["dir_aligned_reads"] + "{prefix}.{ref_name}.{suffix}.bam.bai",
+    #     ref=config["dir_ref"] + "{ref_name}.fasta",
+    # output:
+    #     prefix=config["dir_variants"] + "{prefix}.{ref_name}.{suffix}.manta/runWorkflow.py",
+    # log:
+    #     config["dir_variants"] + "{prefix}.{ref_name}.{suffix}.manta_conf.log",
+    # # benchmark:
+    # #          config["dir_logs"] + "dv/{sample}/{sample}.{prefix}.dv.tsv"
+    # benchmark:
+    #     config["dir_variants"] + "{prefix}.{ref_name}.{suffix}.manta_conf.rtime.tsv",
+    #
+    # threads: get_run_threads("manta_conf")
+    run:
+        import pysam
+        prefix = str(output.prefix)[:-15]
+        if os.path.exists(f"{prefix}"):
+            shell("rm -rf {prefix}")
+        shell("mkdir -p {prefix}")
+        strelka = config["software"]["strelka"]
+        bgzip = config["software"]["bgzip"]
+        tabix = config["software"]["tabix"]
+
+        fasta = pysam.FastaFile(f"{input.ref}")
+        chrom_list = { i:j for i, j in zip(fasta.references,fasta.lengths)}
+        fasta.close()
+        bed_chrom = open(f"{prefix}/{wildcards.chrom}.bed","w")
+        bed_chrom.write(f"{wildcards.chrom}\t0\t{chrom_list[wildcards.chrom]}\n")
+        bed_chrom.close()
+        shell("{bgzip} -f {prefix}/{wildcards.chrom}.bed")
+        shell("{tabix} {prefix}/{wildcards.chrom}.bed.gz")
+        bams_str=" ".join([f"--bam {i}" for i in input.bams])
+        shell("{strelka} {bams_str} --referenceFasta {input.ref} "
+              "--runDir {prefix} --callRegions {prefix}/{wildcards.chrom}.bed.gz 2>{log} 1>{log}")
+
+rule strelka_call:
+    input:
+        prefix=rules.strelka_conf.output.prefix
+    output:
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/strelka/chroms/{cohort}.{ref_name}.{tech}.strelka.{chrom}.SNVIndel.raw.vcf.gz"
+    log:
+        config["dir_data"] + "variants_raw/{cohort}/strelka/logs/{cohort}.{ref_name}.{tech}.{chrom}.strelka.log"
+    benchmark:
+        config["dir_data"] + "variants_raw/{cohort}/strelka/logs/{cohort}.{ref_name}.{tech}.{chrom}.strelka.rtime.tsv"
+
+    threads: get_run_threads("manta_call")
+    run:
+        prefix = str(input.prefix)[:-15]
+        tmp_vcf = f"{prefix}/results/variants/variants.vcf.gz",
+        config_strelka = config["software"]["strelka"]
+        strelka_pre = "/".join(f"{config_strelka}".split("/")[:-1])
+        shell("export PATH={strelka_pre}:$PATH && "
+              "chmod +x {input.prefix} && "
+              "{input.prefix} -m local -j {threads} 2>{log} 1>{log}")
+        shell("ln -f {tmp_vcf} {output.vcfgz}")
+        shell("ln -f {tmp_vcf}.tbi {output.vcfgz}.tbi")
