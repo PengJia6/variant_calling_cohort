@@ -40,15 +40,15 @@ for cohort, cohort_info in config["samples"].items():
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant", "freebayes", "strelka"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["longshot","clair3"]:
+            if caller in ["longshot", "clair3", "nanocaller"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
 
-            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss","smoove","whamg","wham"]:
+            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss", "smoove", "whamg", "wham"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["arcsv"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
-            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "svim" ]:
+            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "svim"]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
@@ -69,6 +69,7 @@ include: "rules/gatk_hc.smk"
 include: "rules/deepvariant.smk"
 include: "rules/longshot.smk"
 include: "rules/clair3.smk"
+include: "rules/nanocaller.smk"
 
 include: "rules/pindel.smk"
 include: "rules/gridss.smk"

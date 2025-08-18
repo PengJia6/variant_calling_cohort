@@ -326,7 +326,7 @@ rule sample_vcf_chrom_concat_new:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="longshot|clair3"
+        caller="longshot|clair3|nanocaller"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
