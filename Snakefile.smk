@@ -40,15 +40,15 @@ for cohort, cohort_info in config["samples"].items():
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant", "freebayes", "strelka"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["longshot", "clair3", "nanocaller"]:
+            if caller in ["longshot", "clair3", "nanocaller","medaka"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
 
-            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss", "smoove", "whamg", "wham"]:
+            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss", "smoove", "whamg", "wham","delly"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["arcsv"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
-            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "svim"]:
+            if caller in ["sniffles", "cutesv", "svision", "svision_pro", "debreak", "svim", "nanovar"]:
                 for sample in samples:
                     # "samples/{cohort}.{sample}.{ref_name}.{tech}.sniffles.SV.raw.vcf.gz","
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
@@ -70,12 +70,14 @@ include: "rules/deepvariant.smk"
 include: "rules/longshot.smk"
 include: "rules/clair3.smk"
 include: "rules/nanocaller.smk"
+include: "rules/nanovar.smk"
 
 include: "rules/pindel.smk"
 include: "rules/gridss.smk"
 include: "rules/arcsv.smk"
 include: "rules/smoove.smk"
 include: "rules/wham.smk"
+include: "rules/delly.smk"
 
 include: "rules/sniffles.smk"
 include: "rules/cutesv.smk"
@@ -83,6 +85,7 @@ include: "rules/svision.smk"
 include: "rules/debreak.smk"
 include: "rules/pbsv.smk"
 include: "rules/svim.smk"
+include: "rules/medaka.smk"
 
 include: "rules/longtr.smk"
 include: "rules/trgt.smk"

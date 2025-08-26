@@ -257,7 +257,7 @@ rule cohort_vcf_chrom_concat:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|longtr|gangstr|pbsv|freebayes|strelka|arcsv"
+        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|gangstr|pbsv|freebayes|strelka|arcsv"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
@@ -326,7 +326,7 @@ rule sample_vcf_chrom_concat_new:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="longshot|clair3|nanocaller"
+        caller="longshot|clair3|nanocaller|nanovar"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]

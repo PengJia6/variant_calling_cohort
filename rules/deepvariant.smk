@@ -17,7 +17,7 @@ rule deepvariant_call:
     output:
         vcf_gz=config["dir_data"] + "variants_raw/{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.vcf.gz",
         gvcf_gz=config["dir_data"] + "variants_raw/{cohort}/deepvariant/samples/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.g.vcf.gz"
-        # gvcf_gz=config["dir_variants"] + "dv/dv_details/{sample}/{sample}.{prefix}.dv.raw.g.vcf.gz"
+    # gvcf_gz=config["dir_variants"] + "dv/dv_details/{sample}/{sample}.{prefix}.dv.raw.g.vcf.gz"
     log:
         config["dir_data"] + "variants_raw/{cohort}/deepvariant/logs/{cohort}.{sample}.{ref_name}.{tech}.deepvariant.SNVIndel.log",
 
@@ -43,19 +43,30 @@ rule deepvariant_call:
             this_tech = "WES"
         else:
             exit()
-        shell('docker run '
+        shell("date > {log}")
+        shell('docker run --rm '
               '-v "{bam_dir}":"/input" '
               '-v "{ref_dir}":"/ref" '
               '-v "{output_dir}":"/output" '
-              'google/deepvariant:1.6.0 /opt/deepvariant/bin/run_deepvariant '
+              '--security-opt seccomp=unconfined '
+              '--ulimit nproc=65535:65535 '
+              '--ulimit nofile=65535:65535 '
+              '-e OMP_NUM_THREADS={threads} '
+              '-e OPENBLAS_NUM_THREADS={threads} '
+              '-e MKL_NUM_THREADS={threads} '
+              'google/deepvariant:1.9.0 /opt/deepvariant/bin/run_deepvariant '
               '--model_type={this_tech} '
               '--ref=/ref/{ref_file} '
               '--reads=/input/{bam_file} '
               '--output_vcf=/output/{output_file}.vcf '
               '--output_gvcf=/output/{output_file}.g.vcf '
               '--num_shards={threads} '
-              '--make_examples_extra_args min_mapping_quality=1,keep_supplementary_alignments=true '
+              # --make_examples_extra_args=''
+              '--make_examples_extra_args min_mapping_quality=1,keep_supplementary_alignments=true,small_model_call_multiallelics=false '
               '--intermediate_results_dir /output/{file_tmp} 1>>{log} 2>>{log}')
+        #
+        # shell( "/data/home/lbjia/miniconda3/envs/pipe_var_deepvariant/bin/dv_call_variants.py "
+        #        "--model ")
         shell("{bcftools} view -Oz -o {output.vcf_gz} {output_dir}/{output_file}.vcf 2>>{log} 1>>{log}")
         shell("{bcftools} view -Oz -o {output.gvcf_gz} {output_dir}/{output_file}.g.vcf 2>>{log} 1>>{log}")
 
@@ -96,7 +107,6 @@ rule deepvariant_merge_vcf:
                 input_vcfs.append("/".join(item.split("/")[-4:]))
             inputs_str = " ".join(["/input/" + item for item in input_vcfs])
             bcftools = config["software"]["bcftools"]
-
 
             shell("docker run -v {input_dir}:/input quay.io/mlin/glnexus:v1.2.7 /usr/local/bin/glnexus_cli "
                   "--config DeepVariantWGS "
