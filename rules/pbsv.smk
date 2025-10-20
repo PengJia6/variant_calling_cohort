@@ -28,7 +28,7 @@ rule pbSV_discovery:
         shell("mkdir -p {output_pre}")
         pbsv = config["software"]["pbsv"]
         shell("echo {pbsv} discover -s {wildcards.sample} -b {input.ref} --region {wildcards.contig}  {input.bam} {output.sig} 2>>{log} 1>>{log} ")
-        shell("{pbsv} discover -s {wildcards.sample} -b {input.ref}  {input.bam} {output.sig} 2>>{log} 1>>{log} ")
+        shell("{pbsv} discover -s {wildcards.sample} -b {input.ref} --region {wildcards.contig} {input.bam} {output.sig} 2>>{log} 1>>{log} ")
 
 
 # def get_pbsv_contig_sig(wildcards):

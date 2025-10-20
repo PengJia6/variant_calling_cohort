@@ -14,19 +14,23 @@ import pysam
 
 rule hipstr_call:
     input:
-        unpack(get_samples_bam),
+        # unpack(get_samples_bam),
+        bams= lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample],
+        bai=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample] + ".bai",
         bed=lambda wildcards: config["refs"][wildcards.ref_name]["tandem_repeat"]["HipSTR"]
     # exclude=lambda wildcards: config["refs"][wildcards.ref_name]["exclude"],
     output:
         # protected(config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel")
-        vcfgz=config["dir_data"] + "variants_raw/{cohort}/hipstr/chroms/{cohort}.{ref_name}.{tech}.hipstr.{chrom}.TR.raw.vcf.gz",
+        # vcfgz=config["dir_data"] + "variants_raw/{cohort}/hipstr/chroms/{cohort}.{ref_name}.{tech}.hipstr.{chrom}.TR.raw.vcf.gz",
+        vcfgz=config["dir_data"] + "variants_raw/{cohort}/hipstr/samples/{cohort}.{sample}.{ref_name}.{tech}/{chrom}.hipstr.TR.raw.vcf.gz",
+
     params:
         extra="",
         dp=5
     log:
-        config["dir_data"] + "variants_raw/{cohort}/hipstr/logs/{cohort}.{ref_name}.{tech}.{chrom}.hipstr.log"
+        config["dir_data"] + "variants_raw/{cohort}/hipstr/logs/samples/{cohort}.{sample}.{ref_name}.{tech}.{chrom}.hipstr.log"
     benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/hipstr/logs/{cohort}.{ref_name}.{tech}.{chrom}.hipstr.rtime.tsv"
+        config["dir_data"] + "variants_raw/{cohort}/hipstr/logs/samples/{cohort}.{sample}.{ref_name}.{tech}.{chrom}.hipstr.rtime.tsv"
     threads: get_run_threads("hipstr_call")
     run:
         hipstr = config["software"]["hipstr"]

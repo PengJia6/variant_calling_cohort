@@ -57,6 +57,10 @@ for cohort, cohort_info in config["samples"].items():
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.CNV.ok")
             if caller in ["trgt", "gangstr", "hipstr", "longtr"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi",)
+            # if caller in ["longtr","longtr"]:
+            #     for sample in samples:
+            #         targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")
+
 # if caller in ["longtr"]:
 #     for sample in samples:
 #         targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")

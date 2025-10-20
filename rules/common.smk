@@ -8,6 +8,7 @@
 # ======================================================================================================================
 
 import os.path
+from shutil import unpack_archive
 
 import yaml
 
@@ -257,45 +258,45 @@ rule cohort_vcf_chrom_concat:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|gangstr|pbsv|freebayes|strelka|arcsv"
+        caller="varscan|bcftools|GATK_HC|pindel|manta|hipstr|gangstr|pbsv|freebayes|strelka|arcsv|hipstr"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
         shell("{bcftools} concat -a  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
 
 
-def get_chroms_raw_vcf_merged_vcfs_sample(wildcards):
-    chroms = config["refs"][wildcards.ref_name]["available_chrom"]
-    vcfs = []
-    vcfs_idx = []
-    for chrom in chroms:
-        if wildcards.caller in ["longtr", "gangstr"] and chrom in ["chrM"]: continue
-        vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/chroms/"
-                                         f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
-        vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/chroms/"
-                                         f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
+# def get_chroms_raw_vcf_merged_vcfs_sample(wildcards):
+#     chroms = config["refs"][wildcards.ref_name]["available_chrom"]
+#     vcfs = []
+#     vcfs_idx = []
+#     for chrom in chroms:
+#         if wildcards.caller in ["longtr", "gangstr"] and chrom in ["chrM"]: continue
+#         vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/chroms/"
+#                                          f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
+#         vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/chroms/"
+#                                          f"{wildcards.cohort}.{wildcards.sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
+#
+#     # vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
+#     # vcfs_idx.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
+#     return {"vcf": vcfs, "vcf_idx": vcfs_idx}
 
-    # vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz")
-    # vcfs_idx.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/chroms/{wildcards.cohort}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{chrom}.{wildcards.suffix}.raw.vcf.gz.tbi")
-    return {"vcf": vcfs, "vcf_idx": vcfs_idx}
 
-
-rule sample_vcf_chrom_concat:
-    input:
-        unpack(get_chroms_raw_vcf_merged_vcfs_sample)
-    output:
-        # config["dir_data"] + "variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
-        config["dir_data"] + "variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz",
-    log:
-        config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.log"
-    benchmark:
-        config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
-    wildcard_constraints:
-        caller="longtr"
-    threads: get_run_threads("SNVIndel_chrom_concat")
-    run:
-        bcftools = config["software"]["bcftools"]
-        shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
+# rule sample_vcf_chrom_concat:
+#     input:
+#         unpack(get_chroms_raw_vcf_merged_vcfs_sample)
+#     output:
+#         # config["dir_data"] + "variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz"
+#         config["dir_data"] + "variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.raw.vcf.gz",
+#     log:
+#         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.log"
+#     benchmark:
+#         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
+#     wildcard_constraints:
+#         caller="longtr"
+#     threads: get_run_threads("SNVIndel_chrom_concat")
+#     run:
+#         bcftools = config["software"]["bcftools"]
+#         shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
 
 
 def get_chroms_raw_vcf_merged_vcfs_sample_new(wildcards):
@@ -326,8 +327,26 @@ rule sample_vcf_chrom_concat_new:
     benchmark:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/logs/{cohort}.{sample}.{ref_name}.{tech}.{caller}.{suffix}.chrom_concat.rtime.tsv"
     wildcard_constraints:
-        caller="longshot|clair3|nanocaller|nanovar"
+        caller="longshot|clair3|nanocaller|nanovar|longtr|hipstr|gangstr"
     threads: get_run_threads("SNVIndel_chrom_concat")
     run:
         bcftools = config["software"]["bcftools"]
         shell("{bcftools} concat  -o {output} -Oz --threads {threads} {input.vcf}  2>{log} 1>{log} ")
+
+def get_merge_samples_input(wildcards):
+    vcfs = []
+    for sample, path_bam in config["samples"][wildcards.cohort]["path"][wildcards.tech].items():
+        # bams.append(path_bam)
+        # bais.append(path_bam + ".bai")
+        vcfs.append(config["dir_data"] + f"variants_raw/{wildcards.cohort}/{wildcards.caller}/samples/{wildcards.cohort}.{sample}.{wildcards.ref_name}.{wildcards.tech}.{wildcards.caller}.{wildcards.suffix}.vcf.gz")
+    return vcfs
+
+rule merge_samples_vcfs:
+    input:
+        unpack(get_merge_samples_input)
+    output:
+        config["dir_data"] + "variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.vcf.gz"
+    wildcard_constraints:
+        caller="longtr|hipstr|gangstr"
+    run:
+        shell("")

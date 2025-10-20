@@ -4,7 +4,7 @@ rule whamg_call:
         exclude=lambda wildcards: config["refs"][wildcards.ref_name]["exclude"],
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
     output:
-        vcf=config["dir_data"] + "variants_raw/{cohort}/whamg/{cohort}.{ref_name}.{tech}.whamg.SV.raw.vcf.gz"
+        vcf=config["dir_data"] + "variants_raw/{cohort}/whamg/{cohort}.{ref_name}.{tech}.whamg.SV.ungt.vcf"
     params:
         extra="",
     log:
@@ -24,10 +24,23 @@ rule whamg_call:
                 exclude_contigs.append(chrom)
         exclude_contig_str = ",".join([f"{i}" for i in exclude_contigs])
         bam_str = ",".join([i for i in input.bams])
-        out_vcf = f"{output.vcf}"[:-3]
+        # out_vcf = f"{output.vcf}"[:-3]
         shell("export EXCLUDE={exclude_contig_str} && "
-              "{whamg} -x {threads} -e $EXCLUDE -a {input.ref} -f {bam_str} > {out_vcf}  2> {log} ")
-        shell("{bcftools} view -o {output.vcf} -Oz  {out_vcf}")
+              "{whamg} -x {threads} -e $EXCLUDE -a {input.ref} -f {bam_str} -m 5 -z > {output}  2> {log} ")
+
+# shell("{bcftools} view -o {output.vcf} -Oz  {out_vcf}")
+
+rule svtypter_whamg:
+    input:
+        unpack(get_samples_bam),
+        vcf=config["dir_data"] + "variants_raw/{cohort}/whamg/{cohort}.{ref_name}.{tech}.whamg.SV.ungt.vcf",
+    output:
+        vcf=config["dir_data"] + "variants_raw/{cohort}/whamg/{cohort}.{ref_name}.{tech}.whamg.SV.raw.vcf.gz",
+    run:
+        svtyper = config["software"]["svtyper"]
+        bam_str = ",".join([i for i in input.bams])
+        shell("{svtyper} -i {input.vcf} -B {bam_str}  > {output} ")
+
 
 rule wham_call:
     input:
