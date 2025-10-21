@@ -15,9 +15,11 @@ import pysam
 rule hipstr_call:
     input:
         # unpack(get_samples_bam),
-        bams= lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample],
+        bam=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample],
         bai=lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample] + ".bai",
-        bed=lambda wildcards: config["refs"][wildcards.ref_name]["tandem_repeat"]["HipSTR"]
+        bed=lambda wildcards: config["refs"][wildcards.ref_name]["tandem_repeat"]["HipSTR"],
+        ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
+        ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
     # exclude=lambda wildcards: config["refs"][wildcards.ref_name]["exclude"],
     output:
         # protected(config["dir_data"] + "variants_raw/{cohort}/pindel/chroms/{cohort}.{ref_name}.{tech}.{chrom}.pindel")
@@ -34,9 +36,9 @@ rule hipstr_call:
     threads: get_run_threads("hipstr_call")
     run:
         hipstr = config["software"]["hipstr"]
-        bam_str = ",".join([i for i in input.bams])
+        # bam_str = ",".join([i for i in input.bams])
         shell(
-            "{hipstr} --bams {bam_str} --fasta {input.ref} --regions  {input.bed} --str-vcf {output} --chrom {wildcards.chrom} "
+            "{hipstr} --bams {input.bam} --fasta {input.ref} --regions  {input.bed} --str-vcf {output} --chrom {wildcards.chrom} "
             "--output-filters --use-unpaired --no-rmdup --max-str-len 10000 --max-flank-indel 1 >{log} 1>{log} "
         )
 

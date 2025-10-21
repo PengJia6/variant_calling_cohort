@@ -9,7 +9,7 @@
 rule gangstr_call:
     input:
         # unpack(get_samples_bam),
-        bams= lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample],
+        bam= lambda wildcards: config["samples"][wildcards.cohort]["path"][wildcards.tech][wildcards.sample],
         ref=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"],
         ref_fai=lambda wildcards: config["refs"][wildcards.ref_name]["fasta"] + ".fai",
         bed=lambda wildcards: config["refs"][wildcards.ref_name]["tandem_repeat"]["GangSTR"]
@@ -37,10 +37,10 @@ rule gangstr_call:
         pref = f"{output}".rstrip(".vcf.gz")
         gangstr = config["software"]["gangstr"]
         bcftools = config["software"]["bcftools"]
-        bam_str = ",".join([i for i in input.bams])
+        # bam_str = ",".join([i for i in input.bams])
         shell(
-            "{gangstr} --bam {bam_str} --ref {input.ref} --regions  {input.bed} --out {pref} "
-            "--max-proc-read 50000 "
+            "{gangstr} --bam {input.bam} --ref {input.ref} --regions  {input.bed} --out {pref} "
+            "--max-proc-read 50000  --chrom {wildcards.chrom} "
             " 2>{log} 1>{log} "
         )
         shell("{bcftools} view -o {output} -Oz {pref}.vcf")
