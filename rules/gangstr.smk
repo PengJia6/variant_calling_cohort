@@ -40,7 +40,7 @@ rule gangstr_call:
         # bam_str = ",".join([i for i in input.bams])
         shell(
             "{gangstr} --bam {input.bam} --ref {input.ref} --regions  {input.bed} --out {pref} "
-            "--max-proc-read 50000  --chrom {wildcards.chrom} "
+            "--max-proc-read 3000  --chrom {wildcards.chrom} "
             " 2>{log} 1>{log} "
         )
         shell("{bcftools} view -o {output} -Oz {pref}.vcf")

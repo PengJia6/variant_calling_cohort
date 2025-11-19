@@ -40,11 +40,11 @@ for cohort, cohort_info in config["samples"].items():
         for caller in callers:
             if caller in ["varscan", "bcftools", "GATK_HC", "deepvariant", "freebayes", "strelka"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
-            if caller in ["longshot", "clair3", "nanocaller","medaka"]:
+            if caller in ["longshot", "clair3", "nanocaller", "medaka"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.SNVIndel.raw.vcf.gz.tbi")
 
-            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss", "smoove", "whamg", "wham","delly"]:
+            if caller in ["pindel", "manta", "sniffles2", "pbsv", "gridss", "smoove", "whamg", "wham", "delly"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
             if caller in ["arcsv"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.SV.raw.vcf.gz.tbi")
@@ -55,11 +55,14 @@ for cohort, cohort_info in config["samples"].items():
             if caller in ["hificnv"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.CNV.ok")
-            if caller in ["trgt", "gangstr", "hipstr", "longtr"]:
+            if caller in ["trgt", "gangstr", "hipstr", "longtr", "ExpansionHunter"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi",)
-            # if caller in ["longtr","longtr"]:
-            #     for sample in samples:
-            #         targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")
+            if caller in ["somalier"]:
+                targets.append(config["dir_data"] + f"variants_raw/{cohort}/somalier/{cohort}.{ref_name}.somalier.ok")
+
+# if caller in ["ExpansionHunter"]:
+#     for sample in samples:
+#         targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi")
 
 # if caller in ["longtr"]:
 #     for sample in samples:
@@ -97,6 +100,9 @@ include: "rules/hificnv.smk"
 include: "rules/manta.smk"
 include: "rules/gangstr.smk"
 include: "rules/hipstr.smk"
+include: "rules/expansionhunter.smk"
+
+include: "rules/somalier.smk"
 
 # include: "rules/bam_merge.smk"
 # include: "rules/leftalign.smk"
