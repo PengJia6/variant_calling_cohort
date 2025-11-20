@@ -55,7 +55,7 @@ for cohort, cohort_info in config["samples"].items():
             if caller in ["hificnv"]:
                 for sample in samples:
                     targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/samples/{cohort}.{sample}.{ref_name}.{tech}.{caller}.CNV.ok")
-            if caller in ["trgt", "gangstr", "hipstr", "longtr", "ExpansionHunter"]:
+            if caller in ["trgt", "gangstr", "hipstr", "longtr", "ExpansionHunter","TREAT"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.TR.raw.vcf.gz.tbi",)
             if caller in ["somalier"]:
                 targets.append(config["dir_data"] + f"variants_raw/{cohort}/somalier/{cohort}.{ref_name}.somalier.ok")
@@ -101,6 +101,7 @@ include: "rules/manta.smk"
 include: "rules/gangstr.smk"
 include: "rules/hipstr.smk"
 include: "rules/expansionhunter.smk"
+include: "rules/TREAT.smk"
 
 include: "rules/somalier.smk"
 

@@ -37,9 +37,10 @@ rule hipstr_call:
     run:
         hipstr = config["software"]["hipstr"]
         # bam_str = ",".join([i for i in input.bams])
+
         shell(
             "{hipstr} --bams {input.bam} --fasta {input.ref} --regions  {input.bed} --str-vcf {output} --chrom {wildcards.chrom} "
-            "--output-filters --use-unpaired --no-rmdup --max-str-len 10000 --max-flank-indel 1 >{log} 1>{log} "
+            "--output-filters --use-unpaired --no-rmdup --max-str-len 10000 --max-flank-indel 1 --min-reads 2 --quiet   >{log} 1>{log} "
         )
 
 

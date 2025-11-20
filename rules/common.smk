@@ -347,6 +347,6 @@ rule merge_samples_vcfs:
     output:
         config["dir_data"] + "variants_raw/{cohort}/{caller}/{cohort}.{ref_name}.{tech}.{caller}.{suffix}.vcf.gz"
     wildcard_constraints:
-        caller="longtr|hipstr|gangstr"
+        caller="longtr|hipstr|TREAT"
     run:
         shell("")
